@@ -59,7 +59,7 @@ settings_saved#:#Einstellungen gespeichert
 course_adm_overview#:#Übersicht
 course_adm_log#:#Protokoll
 sectionTicketSystem#:#Zugang zum Ticketsystem
-disableTicketSystem#:#Ticketsystem nicht verwenden
+enableTicketSystem#:#Ticketsystem verwenden
 userTicketSystem#:#Login für Ticketsystem
 passTicketSystem#:#Passwort für Ticketsystem
 noRTUser#:#Benachrichtigung des HRZ konnte nicht erfolgen.
@@ -217,3 +217,4 @@ calendarURLHint#:#CalDAV-Abonnement-Adresse des Kalenders
 runParallel#:#Paralleldurchgang
 runSuccessive#:#Folgedurchgang
 runInspection#:#Einsichtnahme
+enableCalendar#:#CalDAV-Kalender verwenden

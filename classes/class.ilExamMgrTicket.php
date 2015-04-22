@@ -99,12 +99,12 @@ class ilExamMgrTicket implements RTTicket
         $this->rt_pass = ilExamMgrPlugin::getSetting('rt_pass');
         $this->rt_path = ilExamMgrPlugin::getSetting('rt_path');
         $this->rt_queue = ilExamMgrPlugin::getSetting('rt_queue');
-        $this->disabled = ilExamMgrPlugin::getSetting('rt_disabled');
+        $this->enabled = ilExamMgrPlugin::getSetting('rt_enabled');
     }
 
     public function createTicket($ccList, $message) {
         global $lng, $ilUser, $ilPluginAdmin;
-        if($this->disabled) {
+        if(!$this->enabled) {
             return false;
         }
         if($this->rt_user == '' || $this->rt_pass == '') {
@@ -161,7 +161,7 @@ class ilExamMgrTicket implements RTTicket
 
 
     public function addReply($comment) {
-        if($this->disabled) {
+        if(!$this->enabled) {
             return true;
         }
         $id = $this->examObj->getTicketId();
@@ -178,7 +178,7 @@ class ilExamMgrTicket implements RTTicket
     }
 
     public function addComment($comment) {
-        if($this->disabled) {
+        if(!$this->enabled) {
             return true;
         }
         $id = $this->examObj->getTicketId();
@@ -195,7 +195,7 @@ class ilExamMgrTicket implements RTTicket
     }
 
     public function changeSubject($newSubj) {
-        if($this->disabled) {
+        if(!$this->enabled) {
             return true;
         }
         $id = $this->examObj->getTicketId();
@@ -208,7 +208,7 @@ class ilExamMgrTicket implements RTTicket
     }
 
     public function addCC($newCC) {
-        if($this->disabled) {
+        if(!$this->enabled) {
             return true;
         }
         $current = $this->getCC();
@@ -231,7 +231,7 @@ class ilExamMgrTicket implements RTTicket
     }
 
     public function getCC() {
-        if($this->disabled) {
+        if(!$this->enabled) {
             return array();
         }
         $id = $this->examObj->getTicketId();

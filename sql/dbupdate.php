@@ -333,3 +333,11 @@ $ilDB->manipulate('INSERT INTO rep_robj_xemg_settings (`setting`, `value`) VALUE
 
 $ilDB->addTableColumn('rep_robj_xemg_data', 'exam_title', array("type" => "text", "length" => 50));
 ?>
+
+<#9>
+<?php
+
+$ilDB->manipulate("DELETE FROM rep_robj_xemg_settings WHERE setting='rt_disabled'");
+$ilDB->manipulate('INSERT INTO rep_robj_xemg_settings (`setting`, `value`) VALUES ("rt_enabled", "")');
+$ilDB->manipulate('INSERT INTO rep_robj_xemg_settings (`setting`, `value`) VALUES ("cal_enabled", "")');
+?>

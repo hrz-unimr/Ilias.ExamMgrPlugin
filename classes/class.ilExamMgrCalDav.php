@@ -23,6 +23,9 @@ class ilExamMgrCalDav {
      * access the CalDAV server.
      */
     public function createEvent() {
+        if(! ilExamMgrPlugin::getSetting('cal_enabled')) {
+            return;
+        }
         global $lng;
         $vcalendar = new Sabre\VObject\Component\VCalendar();
 

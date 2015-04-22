@@ -39,7 +39,7 @@ class ilExamMgrPlugin extends ilRepositoryObjectPlugin
         'assessment_apisecret' => 'pass',
 //        'assessment_user' => 'text',
 //        'assessment_pass' => 'pass',
-        'rt_disabled' => 'boolean',
+        'rt_enabled' => 'boolean',
         'rt_path' => 'text',
         'rt_queue' => 'text',
         'rt_user' => 'text',
@@ -55,7 +55,8 @@ class ilExamMgrPlugin extends ilRepositoryObjectPlugin
         'smtp_from' => 'text',
         'cal_url' => 'text',
         'cal_user' => 'text',
-        'cal_pass' => 'pass'
+        'cal_pass' => 'pass',
+        'cal_enabled' => 'boolean'
     );
 
     /**

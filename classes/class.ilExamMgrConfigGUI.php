@@ -168,7 +168,7 @@ class ilExamMgrConfigGUI extends ilPluginConfigGUI
         $sh->setTitle($pl->txt("sectionTicketSystem"));
         $form->addItem($sh);
 
-        $cb = new ilCheckBoxInputGUI($pl->txt("disableTicketSystem"), "rt_disabled");
+        $cb = new ilCheckBoxInputGUI($pl->txt("enableTicketSystem"), "rt_enabled");
         $form->addItem($cb);
 
         $ti = new ilTextInputGUI($pl->txt("pathTicketSystem"), "rt_path");
@@ -184,8 +184,9 @@ class ilExamMgrConfigGUI extends ilPluginConfigGUI
         $ti->setMaxLength(100);
         $form->addItem($ti);
 
-        $pi = new ilTextInputGUI($pl->txt("passTicketSystem"), "rt_pass");
-        $pi->setMaxLength(100);
+        $pi = new ilPasswordInputGUI($pl->txt("passTicketSystem"), "rt_pass");
+        $pi->setSkipSyntaxCheck(true);
+        $pi->setRetype(false);
         $form->addItem($pi);
 
         // LDAP
@@ -201,9 +202,10 @@ class ilExamMgrConfigGUI extends ilPluginConfigGUI
         $ti->setMaxLength(100);
         $form->addItem($ti);
 
-        $ti = new ilTextInputGUI($pl->txt("ldap_pass"), "ldap_pass");
-        $ti->setMaxLength(100);
-        $form->addItem($ti);
+        $pi = new ilPasswordInputGUI($pl->txt("ldap_pass"), "ldap_pass");
+        $pi->setSkipSyntaxCheck(true);
+        $pi->setRetype(false);
+        $form->addItem($pi);
 
         $ti = new ilTextInputGUI($pl->txt("ldap_binddn"), "ldap_binddn");
         $ti->setMaxLength(100);
@@ -239,6 +241,9 @@ class ilExamMgrConfigGUI extends ilPluginConfigGUI
         $sh->setTitle($pl->txt("calendar"));
         $form->addItem($sh);
 
+        $cb = new ilCheckBoxInputGUI($pl->txt("enableCalendar"), "cal_enabled");
+        $form->addItem($cb);
+
         $ti = new ilTextInputGUI($pl->txt("calendarURL"), "cal_url");
         $ti->setInfo($pl->txt("calendarURLHint"));
         $ti->setMaxLength(1000);
@@ -248,9 +253,10 @@ class ilExamMgrConfigGUI extends ilPluginConfigGUI
         $ti->setMaxLength(100);
         $form->addItem($ti);
 
-        $ti = new ilTextInputGUI($pl->txt("calendarPass"), "cal_pass");
-        $ti->setMaxLength(100);
-        $form->addItem($ti);
+        $pi = new ilPasswordInputGUI($pl->txt("calendarPass"), "cal_pass");
+        $pi->setSkipSyntaxCheck(true);
+        $pi->setRetype(false);
+        $form->addItem($pi);
 
         $settings = ilExamMgrPlugin::getSettings();
         $form->setValuesByArray($settings);

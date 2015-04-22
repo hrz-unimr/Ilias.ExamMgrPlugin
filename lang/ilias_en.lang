@@ -59,7 +59,7 @@ settings_saved#:#Settings Saved
 course_adm_overview#:#Overview
 course_adm_log#:#Event Log
 sectionTicketSystem#:#Credentials for Ticket System
-disableTicketSystem#:#Disable Ticket System
+enableTicketSystem#:#Enable Ticket System
 userTicketSystem#:#Login for ticket system
 passTicketSystem#:#Password for ticket system
 noRTUser#:#IT could not be notified about this request.
@@ -217,3 +217,4 @@ calendarURLHint#:#CalDAV subscription URL of remote calendar
 runParallel#:#Parallel run
 runSuccessive#:#Successive run
 runInspection#:#Exam inspection
+enableCalendar#:#Enable CalDAV calendar
