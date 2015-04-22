@@ -1,0 +1,278 @@
+<?php
+/**
+ *  examManager -- ILIAS Plugin for the administration of e-assessments
+ *  Copyright (C) 2015 Jasper Olbrich (olbrich <at> hrz.uni-marburg.de)
+ *  See class.ilExamMgrPlugin.php for details.
+ */
+
+require_once "class.ilExamMgrForm.php";
+require_once "class.ilObjExamMgr.php";
+require_once "class.ilExamMgrCalDav.php";
+require_once "class.ilExamMgrLDAP.php";
+
+/**
+ * Class for the basic data form.
+ * This form is used once by the client to submit the assessment request
+ * and can then be used by admins to change the data.
+ */
+class ilExamMgrFormBasic extends ilExamMgrForm {
+
+    /**
+     * Create the form.
+     * @param ilObjExamMgrGUI $parent the parent GUI that contains this form.
+     * @param bool $fromAdminView Should the form be created for a client or an admin?
+     */
+    public function __construct(ilObjExamMgrGUI $parent, $fromAdminView=false) {
+        global $ilCtrl, $lng;
+        parent::__construct($parent);
+
+        $this->setTitle($lng->txt("rep_robj_xemg_enterClientData"));
+
+        $ti = new ilTextInputGUI($lng->txt("rep_robj_xemg_title"), "title");
+        $ti->setRequired(true);
+        $this->addItem($ti);
+
+        $desc = new ilTextAreaInputGUI($lng->txt("rep_robj_xemg_desc"), "desc");
+        $this->addItem($desc);
+
+        $examdatetime = new ilDateTimeInputGUI($lng->txt("rep_robj_xemg_examDate"), "exdate");
+        $examdatetime->setShowTime(true);
+        $examdatetime->setMinuteStepSize(15);
+        $this->addItem($examdatetime);
+
+        $duration = new ilNumberInputGUI($lng->txt("rep_robj_xemg_duration"), "duration");
+        $duration->setInfo($lng->txt("rep_robj_xemg_durationHint"));
+        $this->addItem($duration);
+
+        $deptsFile = file_get_contents(__DIR__."/../departments.csv");
+        $depts = array();
+        foreach(explode("\n", $deptsFile) as $dept) {
+            if(!trim($dept)) {
+                continue;
+            }
+            $dept = explode(";", $dept);
+            $depts[$dept[0]] = $dept[1];
+        }
+        $depts["HRZ"] = "Hochschulrechenzentrum";
+
+        $deptSelector = new ilSelectInputGUI($lng->txt("rep_robj_xemg_department"), "department");
+        $deptSelector->setOptions($depts);
+        $this->addItem($deptSelector);
+
+        $institute = new ilTextInputGUI($lng->txt("rep_robj_xemg_institute"), "institute");
+        $this->addItem($institute);
+
+        $examNumStudents = new ilNumberInputGUI($lng->txt("rep_robj_xemg_examNumStudents"), "exnum");
+        $this->addItem($examNumStudents);
+
+        if($fromAdminView) {
+            $hidden = new ilHiddenInputGUI('fromAdminView');
+            $hidden->setValue('1');
+            $this->addItem($hidden);    // This field determines the redirection target, permissions are checked.
+        } else {
+            $message = new ilTextAreaInputGUI($lng->txt("rep_robj_xemg_createMessage"), 'message');
+            $message->setRows(5);
+            $this->addItem($message);   // Display "Message to IT" field only to client.
+        }
+
+        $sh = new ilFormSectionHeaderGUI();
+        $sh->setTitle($lng->txt("rep_robj_xemg_organizators"));
+        $this->addItem($sh);
+
+        $ti = new ilTextInputGUI($lng->txt("rep_robj_xemg_organizatorAccounts"), "organizatorAccounts");
+        $ti->setInfo($lng->txt("rep_robj_xemg_organizatorAccountsHint"));
+        $ti->setDataSource($ilCtrl->getLinkTarget($parent, "doNameAutoComplete", "", true));
+        $ti->setDisableHtmlAutoComplete(false);
+        $this->addItem($ti);
+           
+        $this->setFormAction($ilCtrl->getFormAction($parent));
+        $this->addCommandButton("saveBasicsEdit", $lng->txt("rep_robj_xemg_saveClientEdit"));
+
+    }
+
+    /**
+     * Fill the form with as much data as available.
+     * @param bool $fromAdminView 
+     */
+    public function fill($fromAdminView=false)
+    {
+        global $ilUser;
+        // Unless the authoring course is created, use object title (is the same
+        // as exam title), later on use exam title, because object title will be
+        // fixed.
+        if($this->plugin_obj->getStatus() < ilObjExamMgr::STATUS_LOCAL) {
+            $values['title'] = $this->plugin_obj->getTitle();
+        } else {
+            $values['title'] = $this->plugin_obj->getExamTitle();
+        }
+        $values['desc'] = $this->plugin_obj->getDescription();
+        if($fromAdminView){
+            $values['exdate'] = array(
+                'date' => $this->plugin_obj->getDate(),
+                'time' => $this->plugin_obj->getTime()
+            );
+            $values['duration'] = $this->plugin_obj->getDuration();
+            $values['exnum'] = $this->plugin_obj->getNumStudents();
+            $values['institute'] = $this->plugin_obj->getInstitute();
+            $orgaMails = array();
+            foreach($this->plugin_obj->getOrgas() as $o) {
+                $orgaMails[] = $o['email'];
+            }
+            $values['organizatorAccounts'] = implode(", ", $orgaMails);
+            $values['fromAdminView'] = 1;  // Beware! Unset values will be overwritten with NULL by setValuesByArray.
+        } // Else, the client is just filling out the form,
+          // fill title and description from first step.
+        $dept = $this->plugin_obj->getDepartment();
+        if(empty($dept)) {
+            $dept = $ilUser->getDepartment();
+        }
+        $values['department'] = $dept;
+        $this->setValuesByArray($values);
+    }
+
+    /**
+     * Save this form's data to database.
+     *
+     * Redirects user according to his role
+     * to user or admin view. If the client submits the form (for the first and only time),
+     * create a RT ticket and a CalDAV event.
+     * @see ilExamMgrTicket Ticket handling class
+     * @see ilExamMgrCalDav CalDAV handling class
+     *
+     * @return bool true on success, false on failure (form not valid)
+     */
+    public function save()
+    {
+        global $tpl, $lng, $ilCtrl, $ilTabs, $tree;
+
+        if ($this->checkInput())
+        {
+            // Save old and new title to change ticket subject.
+            $oldTitle = $this->plugin_obj->getTitle();
+            $newTitle = $this->getInput("title");
+
+            $this->plugin_obj->setExamTitle($newTitle);
+            $examDateTime = $this->getInput("exdate");
+            $this->plugin_obj->setDate($examDateTime['date']);
+            $this->plugin_obj->setTime($examDateTime['time']);
+            // If there already is a local course, don't rename the plugin object, but the containing course.
+            if($this->plugin_obj->getStatus() < ilObjExamMgr::STATUS_LOCAL) {
+                $this->plugin_obj->setTitle($newTitle);
+            } else {
+                $parent_array = $tree->getParentNodeData($this->plugin_obj->getRefId());
+                if($parent_array['type'] == 'crs') {
+                    $containerCourse = new ilObjCourse($parent_array['ref_id']);
+                    $containerCourse->setTitle($this->plugin_obj->getCourseTitle());
+                    $containerCourse->update();
+                }
+            }
+
+            $this->plugin_obj->setDescription($this->getInput("desc"));
+            $this->plugin_obj->setDuration($this->getInput("duration"));
+            $this->plugin_obj->setDepartment($this->getInput("department"));
+            $this->plugin_obj->setInstitute($this->getInput("institute"));
+            $this->plugin_obj->setNumStudents($this->getInput("exnum"));
+            $status = $this->plugin_obj->getStatus();
+
+            $oldOrgas = array();
+            foreach($this->plugin_obj->getOrgas() as $o) {
+                $oldOrgas[] = $o['email'];
+            }
+
+            $newOrgas = [];
+            $searchterms = explode(",", $this->getInput("organizatorAccounts"));
+            $ldapSearcher = new ilExamMgrLDAP();
+            foreach($searchterms as $st) {
+                $st = trim($st);
+
+                $result = array();
+                $ldap_result = $ldapSearcher->searchStaffMail($st);
+                if(count($ldap_result) == 0) {
+                    continue;
+                }
+                $res = $ldap_result->getFirst();
+                $this->plugin_obj->addOrga($res->fullName, $res->mail, $res->account);
+
+                $newOrgas[] = $res->mail;
+
+            }
+            $toDelete = array_diff($oldOrgas, $newOrgas);
+            $this->plugin_obj->removeOrgas($toDelete);
+
+            if($status == ilObjExamMgr::STATUS_NEW) {   // newly created object -> create ticket
+                $cd = new ilExamMgrCalDav($this->plugin_obj);
+                $cd->createEvent();
+                $message = $this->getInput('message');
+                $this->plugin_obj->createTicket($newOrgas, $message);
+
+                ilUtil::sendSuccess($lng->txt('rep_robj_xemg_dataCreated'), true);
+                $this->plugin_obj->addLogMessage(sprintf($lng->txt("rep_robj_xemg_assessmentRequested"), $this->plugin_obj->getTitle()));
+                $this->plugin_obj->setStatus(ilObjExamMgr::STATUS_REQUESTED);
+            } else {    // updated object -> update ticket
+                if($oldTitle != $newTitle) {
+                    $this->plugin_obj->getTicket()->addComment(sprintf($lng->txt("rep_robj_xemg_assessmentTitleChanged"), $oldTitle, $newTitle));
+                    $this->plugin_obj->getTicket()->changeSubject($newTitle);
+                }
+                $this->plugin_obj->getTicket()->setCC($newOrgas);
+                ilUtil::sendSuccess($lng->txt('rep_robj_xemg_dataUpdated'), true);
+                $this->plugin_obj->addLogMessage($lng->txt("rep_robj_xemg_changeByAdmin"));
+            }
+            $this->plugin_obj->update();
+
+
+            if($this->getInput('fromAdminView') == '1') {
+                $ilCtrl->redirect($this->parent, "showAdminView");
+            } else {
+                $ilCtrl->redirect($this->parent, "showClientView");
+            }
+            return true;
+        } else {
+            if($this->getInput('fromAdminView') == '1') {
+                $ilTabs->activateTab("admin");
+            } else {
+                $ilTabs->activateTab("client");
+            }
+            $this->setValuesByPost();
+            $tpl->setContent($this->getHTML());
+            return false;
+        }
+    }
+
+
+    /**
+     * Provide data for email address auto completion.
+     * For a given input like
+     * user1@domain1, user2@domain2, $prefix
+     * search for auto completions for $prefix and return json data
+     * for auto completions while including the first two users unchanged.
+     *
+     * ILIAS's ajax provides the current user input via $_REQUEST['term']
+     */
+    public static function doNameAutoComplete() {
+        $searchterms = explode(",", $_REQUEST['term']);
+        $searchterm = $searchterms[count($searchterms) - 1];
+        $prefix = trim(implode(",", array_slice($searchterms, 0, count($searchterms) - 1)));
+
+        if(strlen($searchterm) < 3) {
+            exit;
+        }
+
+        $ldapSearcher = new ilExamMgrLDAP();
+        $result = array();
+        $ldap_result = $ldapSearcher->searchStaffMail($searchterm, false);
+
+        if(count($ldap_result) == 0) {
+            exit;
+        }
+        
+        $json = array();
+        foreach($ldap_result as $entry) {
+            $json[] = array(
+                "value" => ($prefix == "" ? $entry->mail : $prefix . ", " . $entry->mail),
+                "label" => $entry->fullName);
+        }
+
+        echo json_encode($json);
+        exit;     // bail out to make sure only our JSON-data is sent.
+    }
+}

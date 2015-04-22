@@ -1,0 +1,34 @@
+<style>
+
+th {
+    color: white;
+    background-color: black;
+    font-weight: bold;
+    width: 20%;
+}
+
+.oddRow {
+    background-color: lightgray;
+}
+
+.nrCol {
+    width: 25px;
+}
+
+.checkCol {
+    width: 20px;
+}
+
+</style>
+
+
+<h1>{TITLE}</h1>
+{DATETIME}, {PLACE}<br />
+{PASSWORD}<br />
+<br />
+<table>
+    <tr><th class="nrCol">{NR_HDR}</th><th>{LASTNAME_HDR}</th><th>{FIRSTNAME_HDR}</th><th>{LDAP_HDR}</th><th>{ONEWAY_HDR}</th><th class="checkCol"></th><th class="checkCol"></th></tr>
+    <!-- BEGIN student_row -->
+    <tr {TR_ATTRIBS}><td class="nrCol">{NR}</td><td>{LASTNAME}</td><td>{FIRSTNAME}</td><td>{LDAP}</td><td>{ONEWAY}</td><td class="checkCol">□</td><td class="checkCol">□</td></tr>
+    <!-- END student_row -->
+</table>

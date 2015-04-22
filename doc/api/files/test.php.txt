@@ -1,0 +1,104 @@
+<?php
+
+
+try{
+    var_dump(json_decode("some non-json crap1231123[ 123123"));
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+echo json_last_error_msg();
+error_log("lel");
+echo "huch";
+
+
+
+die;
+?>
+
+
+<?php
+echo "<pre>";
+use Sabre\DAV\Client;
+use Sabre\VObject\Component;
+
+include __DIR__.'/../vendor/autoload.php';
+
+echo microtime(true)."\n";
+echo gethostname()."\n";
+echo getHostByName(getHostName())."\n";
+echo uniqid("", true)."\n";
+
+$vcalendar = new Sabre\VObject\Component\VCalendar();
+
+$vcalendar->add('VEVENT', [
+    'SUMMARY' => 'sabredavclienttest',
+    'DTSTART' => new \DateTime('2015-04-07 12:34:56', new \DateTimeZone('Europe/Berlin')),
+    'DTEND' => new \DateTime('2015-04-07 15:00:51', new \DateTimeZone('Europe/Berlin')),
+    'UID' => uniqid("examMgrPlugin@", true)
+]);
+
+var_dump($vcalendar->serialize());
+
+$settings = array(
+    'baseUri' => 'https://home.students.uni-marburg.de/rpc.php/calendars/Olbrichj@students.uni-marburg.de/calendar:2D99p3uHp92iJY5leU0D8Q1/',
+    'userName' => 'Olbrichj',
+    'password' => 'HBzmz3.PWw'
+//    ,'proxy' => 'locahost:8888',
+);
+
+$client = new Client($settings);
+//$response = $client->request("HEAD");
+//$response = $client->options();
+//$response = $client->request("OPTIONS");
+
+//var_dump($response);
+
+
+/*
+PUT /home/lisa/calendars/events/qwue23489.ics HTTP/1.1
+   If-None-Match: *
+   Host: cal.example.com
+   Content-Type: text/calendar
+   Content-Length: xxxx
+
+   BEGIN:VCALENDAR
+   VERSION:2.0
+   PRODID:-//Example Corp.//CalDAV Client//EN
+   BEGIN:VEVENT
+   UID:20010712T182145Z-123401@example.com
+   DTSTAMP:20060712T182145Z
+   DTSTART:20060714T170000Z
+   DTEND:20060715T040000Z
+   SUMMARY:Bastille Day Party
+   END:VEVENT
+   END:VCALENDAR
+ */
+
+$headers = ["If-None-Match" => "*",
+            "Content-Type" => "text/calendar"];
+
+$body = "BEGIN:VCALENDAR\n".
+"VERSION:2.0\n".
+"PRODID:-\/\/Example Corp.\/\/CalDAV Client\/\/EN\n".
+"BEGIN:VEVENT\n".
+"UID:20010712T182145Z-123401@example.com\n".
+"DTSTAMP:20060712T182145Z\n".
+"DTSTART:20060714T170000Z\n".
+"DTEND:20060715T040000Z\n".
+"SUMMARY:Bastille Day Party\n".
+"END:VEVENT\n".
+"END:VCALENDAR\n";
+
+$evt_name =  substr(str_shuffle(str_repeat("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 5)), 0, 30) . ".ics";
+
+$response = $client->request("PUT", $evt_name, $vcalendar->serialize(), $headers);
+var_dump($response);
+/*
+$response = $client->propfind('collection', array(
+    '{DAV:}displayname'
+));
+
+var_dump($response);
+ */
+echo "</pre>";
+

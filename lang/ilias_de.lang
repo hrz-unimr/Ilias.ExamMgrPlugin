@@ -1,0 +1,219 @@
+
+<!-- language file start -->
+pluginObjectTitle#:#E-Klausurenkoordination
+noCourse#:#Nicht mit Klausurkurs verknüpfen
+obj_xemg#:#E-Klausurenmanagement
+objs_xemg#:#E-Klausuren
+eAssessment#:#E-Klausur
+title#:#Bezeichnung
+desc#:#Beschreibung
+xemg_new#:#Neue E-Klausur anfragen
+objs_xemg_duplicate#:#E-Klausur duplizieren
+xemg_add#:#Weiter...
+clientView#:#Durchführender
+clientEdit#:#Stammdaten
+adminView#:#HRZ-Admin
+saveClientEdit#:#Daten übermitteln
+examDate#:#Klausurtermin
+institute#:#Institut
+duration#:#Klausurdauer
+durationHint#:#Geplante Bearbeitungszeit in Minuten
+enterClientData#:#Stammdaten
+examTime#:#Klausurzeit
+examNumStudents#:#Teilnehmeranzahl
+dataCreated#:#Daten wurden angelegt
+assessmentRequested#:#E-Klausur %s wurde angefragt
+assessmentTitleChanged#:#E-Klausur von %s in %s umbenannt
+changeByAdmin#:#Änderung durch Administrator
+dataUpdated#:#Daten wurden aktualisiert
+date#:#Datum
+time#:#Uhrzeit
+cat_create_xemg#:#E-Klausurenantrag erstellen
+localCourseCreated#:#Pluginobjekt %s in neu angelegten Kurs %s verschoben.
+localCourseNoAccount#:#Nutzeraccount(s) %s existierten noch nicht, wurden angelegt und als Kursadministrator(en) eingetragen.
+assessmentCourses#:#Kurse im Prüfungssystem
+createCourseAuthor#:#Kurs im Autorensystem anlegen
+createLinkCourseAssessment#:#Kurs im Prüfsystem anlegen/verknüpfen
+createCourseAssessmentSuffix#:#Suffix für Klausurkurs
+linkCourseAssessment#:#Verknüpfen mit bestehendem Kurs
+linkCourseAssessmentHint#:#Verknüpfung herstellen mit einem bestehendem Kurs über dessen Ref ID
+createCourseAssessmentHint#:#Kurs wird im Prüfungssystem an gleicher Stelle im Repository angelegt. Name des Kurses wird von hier übernommen und mit dem Suffix weiter unterschieden
+assessmentCourseCreated#:#Kurs im Prüfungssystem angelegt (Link: %s).
+assessmentCourseCreatedHTML#:#Kurs im Prüfungssystem angelegt (<a href="%s">Link</a>).
+assessmentCourseLinked#:#Verknüpfung mit bestehendem Kurs im Prüfungssystem angelegt (Link: %s).
+assessmentCourseLinkedHTML#:#Verknüpfung mit bestehendem Kurs im Prüfungssystem angelegt (<a href="%s">Link</a>).
+createRandomPW#:#Zufälliges Passwort generieren
+courseContainer#:#Prüfungskurs anlegen in
+courseContainerHint#:#Autovervollständigung nutzen!
+pluginConfig#:#Konfiguration des E-Klausurenmanagement-Plugins
+sectionAssessmentSystem#:#Zugang zum Prüfungs-ILIAS (REST)
+addrAssessmentSystemREST#:#Adresse (Host:Port) des Prüfsystems (REST-Schnittstelle)
+addrAssessmentSystemWeb#:#Adresse (Host:Port) des Prüfungssystems (Webinterface)
+addrAssessmentSystemWebExpl#:#Die Adressen könnten unterschiedlich sein, z.B. wenn die ILIAS-Instanzen in einem VLAN sind und sich unter anderen Adressen sehen, als das Webinterface von außen sichtbar ist.
+secureAssessmentSystem#:#Sichere Verbindung
+secureAssessmentSystemDescr#:#Verbindung zum Prüfungssystem per HTTPS absichern?
+userAssessmentSystem#:#Login auf Prüfungssystem
+passAssessmentSystem#:#Passwort auf Prüfungssystem
+clientAssessmentSystem#:#ILIAS-Client-ID auf Prüfungssystem
+settings_saved#:#Einstellungen gespeichert
+course_adm_overview#:#Übersicht
+course_adm_log#:#Protokoll
+sectionTicketSystem#:#Zugang zum Ticketsystem
+disableTicketSystem#:#Ticketsystem nicht verwenden
+userTicketSystem#:#Login für Ticketsystem
+passTicketSystem#:#Passwort für Ticketsystem
+noRTUser#:#Benachrichtigung des HRZ konnte nicht erfolgen.
+RTSuccess#:#Benachrichtigung erfolgreich, Ticket %s erstellt.
+ticket_subject#:#E-Klausur %s am $%s
+status#:#Aktueller Status
+status_requested#:#Klausur angefragt.
+status_course_local#:#Klausurkurs angelegt (Autorensystem).
+status_course_remote#:#Klausurkurs angelegt (Prüfungssystem).
+status_user_imported#:#Benutzerimport durchgeführt.
+status_unknown#:#Unbekannter Zustand.
+uploadUsers#:#Nutzer anlegen
+user_import_col_matr#:#Spalte mit Matrikelnummer
+user_import_col_first#:#Spalte mit Vornamen
+user_import_col_last#:#Spalte mit Nachnamen
+user_import_col_ldap#:#Spalte mit Accountnamen
+user_import_list#:#Anzulegende Nutzer
+user_import_hint#:#Feldtrenner werden automatisch erkannt (möglich sind Tabulator, Komma, Semikolon).
+user_import_success#:#%s Studenten zur Klausur hinzugefügt
+user_import_fail#:#Es sind Fehler aufgetreten, siehe Meldungen im Textfeld
+userAddView#:#Teilnehmer anlegen
+user_list_overview#:#Zur Klausur angemeldete Teilnehmer
+user_list_overview_none#:#Noch keine Teilnehmer angemeldet
+last_name#:#Nachname
+first_name#:#Vorname
+user_list_matriculation_header#:#Matrikelnummer
+ldap_server#:#LDAP Servereinstellungen
+ldap_host#:#LDAP Server Host
+ldap_port#:#LDAP Server Port
+ldap_pass#:#LDAP Bind-Passwort
+ldap_binddn#:#LDAP Bind DN
+ldap_basedn_stud#:#LDAP Base DN für Suche nach Studenten-Accounts (Person)
+ldap_basedn_staff#:#LDAP Base DN für Suche nach Staff-Accounts (Account)
+department#:#Fachbereich
+existing_runs#:#Geplante Durchgänge
+create_run#:#Durchgang anlegen
+run_title#:#Bezeichnung
+run_time#:#Daum/Uhrzeit
+run_start#:#Beginn
+run_end#:#Ende
+run_type#:#Durchgangstyp
+run_add#:#Duchgang anlegen
+run_edit#:#Ändern
+run_delete#:#Löschen
+run_no_runs#:#Noch keine Durchgänge
+run_added#:#Durchgang angelegt
+run_changed#:#Durchgang geändert
+run_deleted#:#Durchgang gelöscht
+pathAssessmentSystem#:#Pfad zur ILIAS-Instanz
+apiKeyAssessmentSystem#:#Oauth2-Api-Key
+apiSecretAssessmentSystem#:#Oauth2-Api-Secret
+pathTicketSystem#:#URL des Ticketsystems
+infoPathTicketSystem#:#Vollständiger URL des Ticketsystems (https://domain.example/rt)
+queueTicketSystem#:#Queue im Ticketsystem
+organizators#:#Prüfer/Autoren
+addOrganizator#:#Prüfer/Autoren hinzufügen
+organizatorAccounts#:#Prüfer/Autoren-Accounts
+organizatorAccountsHint#:#Werden per Ticket benachrichtigt und Administratoren im angelegten Kurs. Bitte autovervollständigte staff-Emailadressen verwenden!
+userManageView#:#Durchgänge
+numAllStudents#:#Studenten gesamt:
+targetRun#:#Durchgang
+noRunYet#:#noch nicht zuordnen
+updateAssignments#:#Zuordnungen übernehmen
+mailingView#:#Einladungsmails
+mailRecipients#:#Empfänger
+allStudents#:#Alle Studenten
+oneRun#:#Nur Teilnehmer eines Durchgangs
+selectRun#:#Durchgang
+specificUsers#:#Nutzer einzeln auswählen
+mailTemplate#:#Vorlage
+mailTemplateHint#:#Mögliche Platzhalter (in geschweiften Klammern): %s
+sendMail#:#Emails verschicken
+invitationSubject#:#Einladung E-Klausur
+invitationAll#:#Einladungen für alle Durchgänge wurden versendet
+invitationRun#:#Einladungen für den Durchgang '%s' wurden versendet
+mailNoSMTP#:#Keine Verbindung zum SMTP-Server auf %s:%s
+mailSentSuccess#:#Erfolgreich %s Einladungen über %s:%s versendet
+mailSentFailure#:#Versand für %s Einladungen fehlgeschlagen<br />Letzte Fehlermeldung: '%s' bei Student '%s'
+transferExam#:#Klausur übertragen
+transferExamSuccess#:#Klausur wurde erfolgreich in Prüfungssystem übertragen
+transferExamFailure#:#Fehler beim Übertragen der Klausur
+transferExamExpl#:#Eine der bestehenden Klausuren in einen der verknüpften Kurse kopieren oder eine dort bestehende Klausur verknüpfen.
+transferExamCopy#:#Test kopieren
+transferExamLink#:#Test verknüpfen
+transferExamSource#:#Testherkunft
+transferExamRemoteID#:#Ref ID im Prüfungssystem
+testSelection#:#Test
+courseSelection#:#Zielkurs
+userTransferView#:#Nutzertransfer
+smtp_server#:#SMTP-Server für Einladungsmails
+smtp_host#:#SMTP-Host
+smtp_port#:#SMTP-Port
+smtp_from#:#Absender
+save#:#Speichern
+transferUsers#:#Nutzer
+noRemote#:#Aktion kann nicht ausgeführt werden, Durchgang %s nicht mit Klausurkurs verknüpft
+transferUsersOneWayFail#:#Anlegen von Einmalaccount fehlgeschlagen<br />%s
+transferUsersLDAPFail#:#Kursaufnahme von LDAP-Account fehlgeschlagen<br />%s
+transferUsersSuccess#:#Erfolgreich %s Accounts angelegt/in Kurs aufgenommen
+transferUsersProblems#:#Es sind Probleme aufgetreten:<br />%s
+createOneWayUsers#:#Einmalaccounts anlegen
+enrollLDAPUsers#:#Bestehende LDAP-Nutzer in Kurs aufnehmen
+course_unlink#:#Verknüpfung aufheben
+linked_courses#:#Verknüpfte Kurse
+no_linked_courses#:#Noch keine Kurse im Prüfungssystem vorhanden
+course_title#:#Kurstitel (im Prüfungssystem)
+room_no_rooms#:#Keine Räume eingetragen
+room_edit#:#Raum ändern
+room_capacity#:#Anzahl Plätze
+room_name#:#Name
+existing_rooms#:#Räume
+create_room#:#Neuen Raum anlegen
+room_add#:#Raum anlegen
+room_added#:#Raum angelegt
+room_updated#:#Raum aktualisiert
+run_room#:#Klausurraum
+room#:#Raum
+createMessage#:#Nachricht an das Rechenzentrum
+password#:#Passwort
+tests#:#Klausuren
+test_title#:#Klausurname
+test_remote_loc#:#Ort im Prüfungssystem
+test_fetch#:#Testergebnisse holen
+test_cleanup#:#Accountbereinigung
+test_unlink#:#Aus Liste entfernen
+test_unlink_msg#:#Verknüpfung wurde aufgehoben. Weitere Schritte müssen manuell auf dem <a href="%s">Prüfungssystem</a> vorgenommen werden.
+test_linked_no_title#:#Wurde manuell verknüpft, Titel unbekannt
+linkExamSuccess#:#Test erfolgreich verknüpft
+autoGenAuthorCourse#:#Automatisch generierter Kurs zur Testerstellung
+printUserNo#:#Nr.
+printUserFilenameAll#:#Nutzerliste %s komplett
+printUserFilenameOne#:#Nutzerliste %s
+printUserLDAP#:#LDAP
+printUserOneTime#:#Einweg
+printingListTitle#:#Nutzerlisten
+printingAll#:#alle Durchgänge
+printingOne#:#einen Durchgang
+printingFor#:#Listen drucken für
+printingSubmit#:#Listen Drucken
+alreadyOneWay#:#%s ist bereits als Einmalaccount für %s angelegt
+alreadyLdap#:#%s ist bereits als LDAP-Account für %s angelegt
+noRemoteAccount#:#Für %s besteht kein Account im Prüfungssystem.
+noMailSent#:#Keine Einladungsmail versendet.
+addToRun#:#Hinzuf.
+deleteFromRun#:#Entf.
+inviteToRun#:#Einladen
+transferForRun#:#Übertr.
+fromTitle#:#von
+toTitle#:#bis
+calendar#:#CalDAV-Kalender
+calendarUser#:#Benutzername
+calendarPass#:#Passwort
+calendarURL#:#URL
+calendarURLHint#:#CalDAV-Abonnement-Adresse des Kalenders
+runParallel#:#Paralleldurchgang
+runSuccessive#:#Folgedurchgang
+runInspection#:#Einsichtnahme

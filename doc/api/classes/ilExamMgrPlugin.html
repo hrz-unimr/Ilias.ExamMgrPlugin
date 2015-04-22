@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">198</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">13</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1314003308"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1314003308" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/RTTicket.html">RTTicket</a></li>
+                                                                                                    <li class="class"><a href="../classes/AccountNotFoundException.html">AccountNotFoundException</a></li>
+                                                    <li class="class"><a href="../classes/HandledGuzzleException.html">HandledGuzzleException</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrCalDav.html">ilExamMgrCalDav</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrConfigGUI.html">ilExamMgrConfigGUI</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrCoursesList.html">ilExamMgrCoursesList</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrCreateRandomPasswordButton.html">ilExamMgrCreateRandomPasswordButton</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrDummyTicket.html">ilExamMgrDummyTicket</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrForm.html">ilExamMgrForm</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormBasic.html">ilExamMgrFormBasic</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormCreateCourseLocal.html">ilExamMgrFormCreateCourseLocal</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormCreateCourseRemote.html">ilExamMgrFormCreateCourseRemote</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormElement.html">ilExamMgrFormElement</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormExamTransfer.html">ilExamMgrFormExamTransfer</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormMailing.html">ilExamMgrFormMailing</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormPrinting.html">ilExamMgrFormPrinting</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormRooms.html">ilExamMgrFormRooms</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormRuns.html">ilExamMgrFormRuns</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormUserManage.html">ilExamMgrFormUserManage</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrFormUserTransfer.html">ilExamMgrFormUserTransfer</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMGrFormUserUpload.html">ilExamMGrFormUserUpload</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrLDAP.html">ilExamMgrLDAP</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrMailer.html">ilExamMgrMailer</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrPDFGenerator.html">ilExamMgrPDFGenerator</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrPlugin.html">ilExamMgrPlugin</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrRemoteCrs.html">ilExamMgrRemoteCrs</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrREST.html">ilExamMgrREST</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrRoom.html">ilExamMgrRoom</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrRoomsList.html">ilExamMgrRoomsList</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrRun.html">ilExamMgrRun</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrRunList.html">ilExamMgrRunList</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrStudent.html">ilExamMgrStudent</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrStudentParser.html">ilExamMgrStudentParser</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrTestsList.html">ilExamMgrTestsList</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrTicket.html">ilExamMgrTicket</a></li>
+                                                    <li class="class"><a href="../classes/ilExamMgrUserManageGUI.html">ilExamMgrUserManageGUI</a></li>
+                                                    <li class="class"><a href="../classes/ilHorizontalRadioGroupInputGUI.html">ilHorizontalRadioGroupInputGUI</a></li>
+                                                    <li class="class"><a href="../classes/ilObjExamMgr.html">ilObjExamMgr</a></li>
+                                                    <li class="class"><a href="../classes/ilObjExamMgrAccess.html">ilObjExamMgrAccess</a></li>
+                                                    <li class="class"><a href="../classes/ilObjExamMgrGUI.html">ilObjExamMgrGUI</a></li>
+                                                    <li class="class"><a href="../classes/ilObjExamMgrListGUI.html">ilObjExamMgrListGUI</a></li>
+                                                    <li class="class"><a href="../classes/ilTreeNode.html">ilTreeNode</a></li>
+                                                    <li class="class"><a href="../classes/LDAPCollectionStaff.html">LDAPCollectionStaff</a></li>
+                                                    <li class="class"><a href="../classes/LDAPCollectionStudent.html">LDAPCollectionStudent</a></li>
+                                                    <li class="class"><a href="../classes/LDAPEntryStaff.html">LDAPEntryStaff</a></li>
+                                                    <li class="class"><a href="../classes/LDAPEntryStudent.html">LDAPEntryStudent</a></li>
+                                                    <li class="class"><a href="../classes/MatriculationNotFoundException.html">MatriculationNotFoundException</a></li>
+                                                    <li class="class"><a href="../classes/NameMismatchException.html">NameMismatchException</a></li>
+                                                    <li class="class"><a href="../classes/NameNotFoundException.html">NameNotFoundException</a></li>
+                                                    <li class="class"><a href="../classes/NameNotUniqueException.html">NameNotUniqueException</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\</small>ilExamMgrPlugin</h1>
+                    <p><em>examManager -- ILIAS Plugin for the administration of e-assessments
+ Copyright (C) 2015 Jasper Olbrich (olbrich &lt;at&gt; hrz.uni-marburg.de)</em></p>
+                    <p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/ilExamMgrPlugin.html#method_getPluginName" class="">getPluginName()</a><br />
+                                                                    <a href="../classes/ilExamMgrPlugin.html#method_getSettings" class="">getSettings()</a><br />
+                                                                    <a href="../classes/ilExamMgrPlugin.html#method_getSetting" class="">getSetting()</a><br />
+                                                                    <a href="../classes/ilExamMgrPlugin.html#method_setSettings" class="">setSettings()</a><br />
+                                                                    <a href="../classes/ilExamMgrPlugin.html#method_createPermaLink" class="">createPermaLink()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No public properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/ilExamMgrPlugin.html#method_handle_pass" class="">handle_pass()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/ilExamMgrPlugin.html#property_settings" class="">$settings</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/class.ilExamMgrPlugin.html"><div class="path-wrapper">class.ilExamMgrPlugin.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                                                                                                                                                
+                                        <div class="namespace-wrapper">\ilRepositoryObjectPlugin</div>
+                                                                                                    <div class="namespace-wrapper">\ilExamMgrPlugin</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                author
+                            </th>
+                            <td>
+                                                                    <p>Jasper Olbrich (olbrich@hrz.uni-marburg.de)</p>
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_settings" name="property_settings" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$settings</h3>
+                <pre class="signature">$settings : </pre>
+                <p><em>Names and types of plugin&#039;s settings.</em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getPluginName" name="method_getPluginName" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getPluginName()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getPluginName() </pre>
+                <p><em>Get the plugin&#039;s full name.</em></p>
+                <p>Is different from <a href="/classes/ilObjExamMgr.html#method_initType">the plugin type</a>.</p>
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getSettings" name="method_getSettings" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getSettings()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getSettings() : array</pre>
+                <p><em>Get all plugin settings.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>Array with &quot;setting&quot; =&gt; &quot;value&quot; entries.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getSetting" name="method_getSetting" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getSetting()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getSetting(string  <span class="argument">$setting</span>) : string</pre>
+                <p><em>Get a single setting.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$setting </td>
+                                <td><p>Name of setting.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Value of setting.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setSettings" name="method_setSettings" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setSettings()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setSettings(\ilPropertyFormGUI  <span class="argument">$form</span>) </pre>
+                <p><em>Store settings from a submitted form.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\ilPropertyFormGUI</td>
+                                <td>$form </td>
+                                <td><p>Form submitted from {@see ilExamMgrConfigGUI configuration GUI}.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_createPermaLink" name="method_createPermaLink" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">createPermaLink()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">createPermaLink(integer  <span class="argument">$refId</span>, string  <span class="argument">$type</span>) : string</pre>
+                <p><em>Create a permanent link to an object on the assessment system with
+known refId and type.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$refId </td>
+                                <td><p>RefId of target object on assessment system</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td><p>Type of target object, abbreviation (crs, tst, ...)</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Permanent link as URL.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_handle_pass" name="method_handle_pass" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">handle_pass()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">handle_pass(string  <span class="argument">$setting</span>, string  <span class="argument">$value</span>, boolean  <span class="argument">$encode = true</span>) : string</pre>
+                <p><em>Password handling for db storage.</em></p>
+                <p>Uses base64 encoding to obfuscate passwords.
+Not secure at all, but prevents &quot;looking over the shoulder attacks&quot;.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$setting </td>
+                                <td><p>Name of the setting, used to look up the type.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$value </td>
+                                <td><p>Value of the setting</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$encode </td>
+                                <td><p>Whether to encode (plaintext-&gt;password) or decode.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Converted value.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">class.ilExamMgrPlugin.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/class.ilExamMgrPlugin.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on April 21st, 2015 at 15:07.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

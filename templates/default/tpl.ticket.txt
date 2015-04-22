@@ -1,0 +1,7 @@
+E-Klausurenwunsch
+
+Titel: {TITEL}
+Datum/Uhrzeit: {DATUM}, {UHRZEIT}
+Erwartete Teilnehmerzahl: {ANZAHL}
+
+{NACHRICHT}

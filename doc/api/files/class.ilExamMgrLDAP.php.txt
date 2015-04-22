@@ -1,0 +1,210 @@
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+/**
+ * Data class to hold an LDAP staff account.
+ */
+class LDAPEntryStaff {
+    public function __construct($ldapArray) {
+        $this->fullName = $ldapArray['cn'][0];
+        $this->mail = $ldapArray['mail'][0];
+        $this->account = $ldapArray['uid'][0];
+    }
+}
+
+/**
+ * Data class to hold an LDAP student account.
+ */
+class LDAPEntryStudent {
+    /**
+     * Constructor.
+     *
+     * Extracts and stores relevant data from LDAP in member variables.
+     *
+     * @param array $ldapArray Array returned by LDAP search.
+     */
+    public function __construct($ldapArray) {
+        $this->firstName = $ldapArray['givenname'][0];
+        $this->lastName = $ldapArray['sn'][0];
+
+        switch($ldapArray['unimranrede'][0]) {
+        case "Herr": $this->gender = 'm'; break;
+        case "Frau": $this->gender = 'f'; break;
+        default: $this->gender = 'x';
+        }
+
+        // Default matriculation numbers start with 's', but there are exceptions...
+        $matriculation_match = array();
+        if(preg_match('/s(.+)/', $ldapArray['unimrmatrikelnummer'][0], $matriculation_match)) {
+            $this->matriculation = $matriculation_match[1];
+        } else {
+            $this->matriculation = $ldapArray['unimrmatrikelnummer'][0];
+        }
+
+        // Extract student account name
+        $ldap_account_match = array();
+        if(preg_match('/uid=([^,]+)/', $ldapArray['unimrlinktoaccount'][0], $ldap_account_match)) {
+            $this->account = $ldap_account_match[1];
+        } else {
+            $this->account = NULL;
+        }
+    }
+}
+        
+/**
+ * Collection class to convert the arrays returned by LDAP search to usable objects.
+ */
+class LDAPCollectionStaff extends Zend\Ldap\Collection {
+
+    function __construct($arg) {
+        parent::__construct($arg);
+    }
+
+    /**
+     * This method of the Iterator interface is used both in getFirst()
+     * and foreach, so this is the right place to convert the LDAP array
+     * to our custom class.
+     */
+    function current() {
+        $data = parent::current();
+        return new LDAPEntryStaff($data);
+    }
+}
+
+/**
+ * Collection class to convert the arrays returned by LDAP search to usable objects.
+ */
+class LDAPCollectionStudent extends Zend\Ldap\Collection {
+
+    function __construct($arg) {
+        parent::__construct($arg);
+    }
+
+    /**
+     * This method of the Iterator interface is used both in getFirst()
+     * and foreach, so this is the right place to convert the LDAP array
+     * to our custom class.
+     */
+    function current() {
+        $data = parent::current();
+        return new LDAPEntryStudent($data);
+    }
+}
+
+
+/**
+ * Central LDAP class to manage all LDAP searches of the plugin.
+ */
+class ilExamMgrLDAP {
+    /**
+     * Constructor.
+     *
+     * Creates an LDAP connection with settings from the plugin's configuration
+     * and binds to the server.
+     */
+    public function __construct() {
+        $settings = ilExamMgrPlugin::getSettings();
+        $this->studBaseDN = $settings['ldap_basedn_stud'];
+        $this->staffBaseDN = $settings['ldap_basedn_staff'];
+
+        $options = array(
+            'host' => $settings['ldap_host'],
+            'port' => $settings['ldap_port'],
+//            'useSsl' => true, // ldap-pbackup
+            'useStartTls' => true,  // test system
+            'password' => $settings['ldap_pass'],
+            'bindRequiresDn' => true,
+            'username' => $settings['ldap_binddn'],
+        );
+        $this->ldap = new Zend\Ldap\Ldap($options);
+        $this->ldap->bind();
+    }
+
+    /**
+     * Search for student by matriculation number.
+     *
+     * @param int $matriculation
+     * @return LDAPCollectionStudent An LDAP collection with at most one element.
+     */
+    public function searchStudentMatriculation($matriculation) {
+        return $this->ldap->search(
+               "(unimrmatrikelnummer=s$matriculation)",  // filter  
+               $this->studBaseDN,  // base dn, null = use from connection
+               Zend\Ldap\Ldap::SEARCH_SCOPE_SUB,
+               array("unimrlinktoaccount", "unimrmatrikelnummer", "sn", "givenname", "unimranrede"),  // attribs to fetch
+               NULL,  // attribute (only one) to sort by
+               "LDAPCollectionStudent", // wrapper class for result
+               1,  // size limit
+               10   // time limit in s
+           );
+    }
+
+    /**
+     * Search for student by LDAP account.
+     *
+     * @param string LDAP account
+     * @return LDAPCollectionStudent An LDAP collection with at most one element.
+     */
+    public function searchStudentAccount($account) {
+        return $this->ldap->search(
+               "(uniMrLinkToAccount=uid=$account,ou=people,ou=Students,ou=Accounts,o=Universitaet Marburg,c=DE)",
+               $this->studBaseDN,
+               Zend\Ldap\Ldap::SEARCH_SCOPE_SUB,
+               array("unimrmatrikelnummer", "unimrlinktoaccount", "sn", "givenname", "unimranrede"),
+               NULL,
+               "LDAPCollectionStudent",
+               1,
+               10
+           );
+    }
+
+    /**
+     * Search for student by full name.
+     *
+     * @param string $firstName 
+     * @param string $lastName
+     * @return LDAPCollectionStudent An LDAP collection with *at most two* elements (duplicate name).
+     * If there are more than one students with the same name, the actual result of this search is not
+     * used, just the fact that the name is not unique is used.
+     */
+    public function searchStudentName($firstName, $lastName) {
+        return $this->ldap->search(
+               "(&(sn=$lastName)(givenname=$firstName))",
+               $this->studBaseDN,
+               Zend\Ldap\Ldap::SEARCH_SCOPE_SUB,
+               array("unimrlinktoaccount", "unimrmatrikelnummer", "sn", "givenname", "unimranrede"),
+               NULL,
+               "LDAPCollectionStudent",
+               2,   // to be able to report duplicate student names
+               10
+            );
+    }
+    
+    /**
+     * Search for staff by email address.
+     *
+     * @param string $mail Prefix or full email address
+     * @param bool $exact If true, the $mail parameter must match exactly,
+     * otherwise a prefix search is performed.
+     * @return LDAPCollectionStaff An LDAP collection with at most one (if `$exact==true`)
+     * or up to ten results.
+     */
+    public function searchStaffMail($mail, $exact=true) {
+        $searchterm = $exact ? "(mail=$mail)" : "(mail=$mail*)";
+        return $this->ldap->search(
+                   $searchterm,
+                   $this->staffBaseDN,
+                   Zend\Ldap\Ldap::SEARCH_SCOPE_SUB,
+                   array("uid", "mail", "cn"),
+                   NULL,
+                   "LDAPCollectionStaff",
+                   $exact ? 1 : 10,     // Provide up to 10 auto-completion suggestions
+                   10
+               );
+    }
+
+
+}
+
+

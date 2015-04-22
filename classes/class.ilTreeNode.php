@@ -1,0 +1,65 @@
+<?php
+/**
+ *  examManager -- ILIAS Plugin for the administration of e-assessments
+ *  Copyright (C) 2015 Jasper Olbrich (olbrich <at> hrz.uni-marburg.de)
+ *  See class.ilExamMgrPlugin.php for details.
+ */
+
+/**
+ * Custom representation of an entry in ILIAS' repository.
+ * Uses only title and Ref id, main purpose is to get "path"
+ * representations of elements in this tree.
+ */
+class ilTreeNode {
+    /**
+     * Separator between path elements. No escaping is done, so pick
+     * something unlikely to appear in "real" titles.
+     */
+    const SEPARATOR = '\\';
+
+    private $children;
+    private $ref_id;
+    private $title;
+
+    function __construct($id, $title='') {
+        $this->ref_id = $id;
+        $this->title = $title;
+        $this->children = array();
+    }
+
+    public function addChild($node) {
+        $this->children[] = $node;
+    }
+
+    public function getChildren() {
+        return $this->children;
+    }
+
+    public function getTitle() {
+        return $this->title;
+    }
+
+    public function getRefId() {
+        return $this->ref_id;
+    }
+
+    /**
+     * Return paths to all (sub-)children of this node.
+     */
+    public function getPaths() {
+        if(!count($this->children)) {
+            return array($this->title);
+        } else {
+            $subpaths = array();
+            foreach($this->children as $c) {
+                $subpaths = array_merge($subpaths, $c->getPaths());
+            }
+            $returnme = array($this->title);
+            foreach($subpaths as $sp) {
+                $returnme[] = $this->title . self::SEPARATOR . $sp;
+            }
+            return $returnme;
+        }
+    }
+}
+

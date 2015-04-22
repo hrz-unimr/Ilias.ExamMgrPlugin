@@ -1,0 +1,194 @@
+<?php
+
+require_once "class.ilExamMgrForm.php";
+require_once "class.ilObjExamMgr.php";
+
+/**
+ * Class for the "Create Course in Authoring System" form.
+ */
+class ilExamMgrFormCreateCourseLocal extends ilExamMgrForm {
+
+    public function __construct(ilObjExamMgrGUI $parent) {
+        parent::__construct($parent);
+        global $ilCtrl, $lng;
+            
+		$this->setTitle($lng->txt("rep_robj_xemg_createCourseAuthor"));
+		$this->setFormAction($ilCtrl->getFormAction($parent));
+
+ 		$ti = new ilTextInputGUI($lng->txt("rep_robj_xemg_courseContainer"), "courseContainer");
+        $ti->setInfo($lng->txt("rep_robj_xemg_courseContainerHint"));
+        $ti->setDataSource($ilCtrl->getLinkTarget($parent, "doRepoAutoComplete", "", true));
+        $ti->setDisableHtmlAutoComplete(false);
+        $ti->setRequired(true);
+        $this->addItem($ti);
+
+        $this->addCommandButton("createCourseLocal", $lng->txt("rep_robj_xemg_createCourseAuthor"));
+        $this->setShowTopButtons(false);
+    }
+
+
+    /**
+     * Create an ILIAS Course in the repository (according to form data)
+     * and put the plugin object there.
+     *
+     * @return bool true on success, false on failure (form not valid, invalid target category).
+     */
+    public function createAndMove (){
+        global $tree, $lng;
+
+        if($this->checkInput()) {
+            // Look for target category
+            $node = $this->buildRepoTree();
+            $target_ref_id = 0;
+            $segments = explode(ilTreeNode::SEPARATOR, $this->getInput('courseContainer'));
+            for($i=1; $i<count($segments); $i++) {  // $i=1: ignore empty root object
+                $segment = $segments[$i]; 
+                $found = false;
+                foreach($node->getChildren() as $c) {
+                    if($c->getTitle() == $segment) {
+                        $node = $c;
+                        $target_ref_id = $c->getRefId();
+                        $found = true;
+                        break;
+                    }
+                }
+                if(!$found) {
+                    ilUtil::sendFailure("Could not find sub category \"$segment\" in category \"{$node->title}\", please use only autocompleted values", true);
+                    return false;
+                }
+            }
+
+            // Create new course
+            $newObj = new ilObjCourse();
+            $newObj->setTitle($this->plugin_obj->getCourseTitle());
+            $newObj->setDescription($lng->txt("rep_robj_xemg_autoGenAuthorCourse"));
+            $newObj->create();
+            $course_ref_id = $newObj->createReference();
+            $newObj->putInTree($target_ref_id);
+            $newObj->setPermissions($target_ref_id);  // clone perms from parent (?)
+            $newObj->update(); // write to DB
+
+            // Make owner of plugin object and additional organizators admin of new course
+            $membersObj = $newObj->getMembersObject();
+            $membersObj->add($this->plugin_obj->getOwner(), IL_CRS_ADMIN);
+            $problems = [];
+            foreach($this->plugin_obj->getOrgas() as $o) {
+                $id = ilObjUser::_lookupId($o['ldap_uid']);
+                if(is_null($id)) {
+                    $problems[] = $o['ldap_uid'];
+                    $new_user =& new ilObjUser();
+
+                    $userData = array(
+                        "login" => $o['ldap_uid'],
+                        "auth_mode" => "ldap",
+                        "passwd_type" => IL_PASSWD_MD5,
+                        "time_limit_unlimited" => 1
+                    );
+                    $new_user->assignData($userData);
+                    $new_user->setTitle($new_user->getFullname());
+                    $new_user->setDescription($new_user->getEmail());
+                    $new_user->setLastPasswordChangeToNow();
+                    $new_user->create();
+                    $new_user->setActive(true);
+                    $new_user->saveAsNew();
+
+                    // Assign "User" role per default
+                    global $rbacadmin, $rbacreview;
+                    $user_role_array = $rbacreview->getRolesByFilter($rbacreview::FILTER_ALL, 0, 'User');
+                    $user_role_id = $user_role_array[0]['obj_id'];
+                    $rbacadmin->assignUser($user_role_id, $new_user->getId());
+                    $id = $new_user->getId();
+                }
+                $membersObj->add($id, IL_CRS_ADMIN);
+            }
+
+            $newObj->update(); // write to DB
+    
+            // Move exam manager plugin object to newly created course
+            $tree->moveTree($this->plugin_obj->getRefId(), $course_ref_id);
+            $this->plugin_obj->setTitle($lng->txt("rep_robj_xemg_pluginObjectTitle"));
+            $this->plugin_obj->setStatus(ilObjExamMgr::STATUS_LOCAL);
+            $this->plugin_obj->update();
+            $message = sprintf($lng->txt("rep_robj_xemg_localCourseCreated"), $this->plugin_obj->getTitle(), $newObj->getTitle());
+            ilUtil::sendSuccess($message, true);
+
+            $ticket = $this->plugin_obj->getTicket();
+            $ticket->addReply($message);
+
+            if(count($problems) > 0){
+                ilUtil::sendInfo(sprintf(
+                    $lng->txt("rep_robj_xemg_localCourseNoAccount"),
+                    implode(", ", $problems)), true);
+            }
+            $this->plugin_obj->addLogMessage($message);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * Create a tree structure of the local repository,
+     * categories only.
+     *
+     * @uses ilDB
+     * @return ilTreeNode The root node of the repository.
+     */
+    private static function buildRepoTree() {
+        global $ilDB;
+
+        $res = $ilDB->query("SELECT `title`, `ref_id`, `parent` , `deleted`".
+                            "FROM `object_reference` as obr ".
+                            "JOIN `object_data` as obd ".
+                            "JOIN `tree` ".
+                            "WHERE obr.obj_id=obd.obj_id ".
+                                  "and tree.child=obr.ref_id ".
+                                  "and obd.type='cat' ".
+                                  "and obr.deleted IS NULL ".
+                            "ORDER BY tree.parent");
+        $rowCollector = array();
+        while($rec = $ilDB->fetchAssoc($res)) { 
+            $rowCollector[] = $rec;
+        }
+
+        $child2parent = array();
+        $id2node = array();
+        foreach($rowCollector as $row) {
+            $child2parent[$row['ref_id']] = $row['parent'];
+            $id2node[$row['ref_id']] = new ilTreeNode($row['ref_id'], $row['title']);
+        }
+
+        $root = new ilTreeNode(1, "");
+        $id2node[1] = $root;
+        foreach($rowCollector as $row) {
+            $id = $row['ref_id'];
+            $child = $id2node[$id];
+            $parent = $id2node[$child2parent[$id]];
+            $parent->addChild($child);
+        }
+
+        return $root;
+    }
+
+    /**
+     * Provide auto completion data for categories in the ILIAS repository.
+     *
+     * ILIAS submits the current input via $GET_['term'].
+     */
+    public static function doRepoAutoComplete() {
+        $root = self::buildRepoTree();
+        $paths = $root->getPaths();
+        $json = array();
+        $searchTerm = $_GET['term'];
+        foreach($paths as $p) {
+            if(stristr($p, $searchTerm) !== false) {
+                $json[] = array("value" => $p, "label" => $p);
+            }
+        }
+
+        echo json_encode($json);
+        exit();     // bail out to make sure only our JSON-data is sent.
+    }
+}
+

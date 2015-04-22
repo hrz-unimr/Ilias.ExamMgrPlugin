@@ -1,0 +1,15 @@
+<h1>{TESTS_HEADER}</h1>
+
+<table class="exam_mgr_table" id="exam_mgr_tests_list">
+    <tr><th>{TITLE_HDR}</th><th>{REMOTE_LOCATION_HDR}</th><th>buttons</th></tr>
+    <!-- BEGIN tests_table_row -->
+    <tr>
+        <td>{TITLE}</td>
+        <td>{REMOTE_LOCATION}</td>
+        <td><input class="cleanup_test_btn" type="button" name="cmd[{CLEANUP_CMD}]" value="{CLEANUP_TXT}" />
+            <input class="fetch_test_btn" type="button" name="cmd[{FETCH_CMD}]" value="{FETCH_TXT}" />
+            <input class="unlink_test_btn" type="button" name="cmd[{UNLINK_CMD}]" value="{UNLINK_TXT}" />
+        </td>
+    </tr>
+    <!-- END tests_table_row -->
+</table>

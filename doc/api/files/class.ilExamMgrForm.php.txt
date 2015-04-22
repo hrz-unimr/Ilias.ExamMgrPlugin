@@ -1,0 +1,89 @@
+<?php
+
+require_once "Services/Form/classes/class.ilPropertyFormGUI.php";
+require_once "Services/Form/classes/class.ilFormPropertyGUI.php";
+
+/**
+ * Wrapper class for ILIAS forms.
+ */
+abstract class ilExamMgrForm extends ilPropertyFormGUI {
+
+    /**
+     * Constructor.
+     *
+     * Store parent GUI and the GUI's plugin (data) object as member variables.
+     * @param $parent ilObjExamMgrGUI|ilExamMgrConfigGUI (with no common base class).
+     */
+    public function __construct($parent) {
+        parent::__construct();
+
+        $this->parent = $parent;
+        $this->plugin_obj = $parent->object;
+    }
+}
+
+/**
+ * Wrapper class for ILIAS form elements.
+ */
+abstract class ilExamMgrFormElement extends ilFormPropertyGUI {
+
+    /**
+     * Constructor.
+     *
+     * Store parent GUI and the GUI's plugin (data) object as member variables.
+     * @param $parent ilObjExamMgrGUI|ilExamMgrConfigGUI (with no common base class).
+     */
+    public function __construct($parent) {
+        parent::__construct();
+        $this->parent = $parent;
+        $this->plugin_obj = $parent->object;
+    }
+
+    /**
+     * Insert this in the given template.
+     *
+     * Copy/paste from ilTextInputGUI, seems to be duplicated in every
+     * form element implementation. Why is this not in ilFormPropertyGUI
+     * (super class of all form elements)?
+     *
+     * @param ilTemplate $a_tpl
+     */
+    public function insert($a_tpl) {
+        $html = $this->render();
+        $a_tpl->setCurrentBlock("prop_generic");
+        $a_tpl->setVariable("PROP_GENERIC", $html);
+        $a_tpl->parseCurrentBlock();
+    }
+
+    /**
+     * No-Op.
+     *
+     * Needed for parent form's setValuesByArray to work.
+     * 
+     * @param $arr Array of values to set.
+     */
+    public function setValueByArray($arr) { }
+
+
+    /**
+     * Validate form input.
+     *
+     * Defaults to false in base class, preventing form from being processed.
+     * @return bool true
+     */
+    public function checkInput() {
+        return true;
+    }
+
+    /**
+     * Get form element's title.
+     *
+     * Is displayed in the left collumn. Leave empty per default.
+     * @return string ""
+     */
+    public function getTitle() {
+        return "";
+    }
+}
+
+

@@ -1,0 +1,75 @@
+<?php
+/**
+ *  examManager -- ILIAS Plugin for the administration of e-assessments
+ *  Copyright (C) 2015 Jasper Olbrich (olbrich <at> hrz.uni-marburg.de)
+ *  See class.ilExamMgrPlugin.php for details.
+ */
+
+require_once "./Services/Repository/classes/class.ilObjectPluginAccess.php";
+
+/**
+ * Access/Condition checking for ExamMgr object
+ *
+ * Quote from the ILIAS developer doc:
+ * "Please do not create instances of large application classes (like ilObjExample)
+ * Write small methods within this class to determin the status."
+ */
+class ilObjExamMgrAccess extends ilObjectPluginAccess
+{
+
+	/**
+     * Method to determine access rights for plugin object.
+	 *
+	 * @param	string		$a_cmd			command (not permission!)
+ 	 * @param	string		$a_permission	permission
+	 * @param	int			$a_ref_id		reference id
+	 * @param	int			$a_obj_id		object id
+	 * @param	int			$a_user_id		user id (if not provided, current user is taken)
+	 *
+	 * @return	boolean		true, if everything is ok
+	 */
+	function _checkAccess($a_cmd, $a_permission, $a_ref_id, $a_obj_id, $a_user_id = "")
+	{
+        if(($a_permission == 'write') && !self::isAdmin($a_user_id)) {    
+            return false;
+        }
+
+		return true;
+	}
+
+    /**
+     * Determine whether a user has admin rights (has the "Administrator" role).
+     * @param int $user_id the user id to check.
+     * @return bool `true` iff $user_id has the "Administrator" role.
+     */
+    public static function isAdmin($user_id){
+        global $rbacreview;
+        $roles = $rbacreview->assignedRoles($user_id);
+        if(in_array(SYSTEM_ROLE_ID, $roles)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * Get statistics/status of an exam manager plugin object by ref ID.
+     * @param $ref_id
+     * @return SQL result if object found in DB, null otherwise
+     */
+    public static function getStatsByRefId($ref_id){
+        global $ilDB;
+        $dbresult = $ilDB->query('SELECT exam_date, num_students '.
+            'FROM object_reference as objr '.
+            'JOIN rep_robj_xemg_data as emgr '.
+            'ON objr.obj_id=emgr.obj_id '.
+            'WHERE objr.ref_id = '.$ilDB->quote($ref_id, 'integer'));
+        if($row = $ilDB->fetchAssoc($dbresult)){
+            return $row;
+        } else {
+            return null;
+        }
+    }
+}
+

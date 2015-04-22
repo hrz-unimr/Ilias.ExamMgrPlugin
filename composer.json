@@ -1,0 +1,9 @@
+{
+    "require": {
+        "guzzlehttp/guzzle": "~5.0",
+        "zendframework/zend-ldap": "~2.3",
+        "phpmailer/phpmailer": "5.2.9",
+        "sabre/dav": "1.9.0alpha2",
+        "sabre/davclient": "dev-master"
+    }
+}

@@ -1,0 +1,146 @@
+<?php
+
+require_once "class.ilExamMgrForm.php";
+require_once "class.ilObjExamMgr.php";
+require_once __DIR__.'/../vendor/autoload.php';
+require_once 'class.ilExamMgrPlugin.php';
+
+/**
+ * Class to encapsulate the REST requests this plugin uses.
+ *
+ * @link http://docs.guzzlephp.org/en/latest/ GuzzlePHP documentation.
+ */
+class ilExamMgrREST {
+    /**
+     * Constructor.
+     * Create a REST helper object with settings from the plugin configuration
+     * and get an Oauth2 Bearer Token.
+     *
+     * @param bool $handleExceptions If `true`, exceptions during REST actions are handled
+     * in this class and reported via ilUtil::sendFailure, otherwise they are not handled
+     * and propagate to the caller.
+     * @throws HandledGuzzleException if $handleExceptions is true and an exception
+     * occurred while fetching the token.
+     */
+    public function __construct($handleExceptions=true) {
+        $settings = ilExamMgrPlugin::getSettings();
+        $this->grantType = "client_credentials";
+        $this->clientId = $settings['assessment_path'];
+        $this->apiKey = $settings['assessment_apikey'];
+        $this->apiSecret = $settings['assessment_apisecret'];
+        $this->handleExceptions = $handleExceptions;
+
+        $data = array(
+            'grant_type' => $this->grantType,
+            'ilias_client_id' => $this->clientId,
+            'api_key' => $this->apiKey,
+            'api_secret' => $this->apiSecret
+        );
+
+        $baseurl = 'http'.($settings['assessment_secure']?'s':'').'://'.$settings['assessment_host'];
+        $this->client = new GuzzleHttp\Client(['base_url' => $baseurl]);
+        if($this->handleExceptions) {
+            try {
+                $response = $this->client->post("/{$this->clientId}/restplugin.php/v1/oauth2/token", ['body' => $data]);
+            } catch (GuzzleHttp\Exception\RequestException $e) {
+                ilUtil::sendFailure("Could not get oauth token<br />".$e->getMessage(), true);
+                throw new HandledGuzzleException();
+            }
+        } else {
+            $response = $this->client->post("/{$this->clientId}/restplugin.php/v1/oauth2/token", ['body' => $data]);
+        }
+
+        $jsonresp = $response->json();
+        $this->token = $jsonresp['access_token'];
+    }
+
+    /**
+     * Setter for the "handle exceptions" property.
+     * @param bool $he Handle exceptions?
+     */
+    public function setHandleExceptions($he) {
+        $this->handleExceptions = $he;
+    }
+
+    /**
+     * Getter for the "handle exceptions" property.
+     * @return bool Are exceptions handles by this class (`true`) or not?
+     */
+    public function getHandleExceptions() {
+        return $this->handleExceptions;
+    }
+
+    /**
+     * Send a POST request to the given route.
+     *
+     * @param string $route REST route
+     * @param array $data Array of (key => value) elements to send as POST body
+     * @param array $files Array of ("POST filename" => "real file name") elements
+     * @return string|bool JSON-decoded response or `false` on error, if error handling is enabled
+     * @throws BadResponseException on Guzzle failure if error handling is disabled
+     */
+    public function post($route, $data=null, $files=null) {
+
+        $request = $this->client->createRequest("POST", "/{$this->clientId}/restplugin.php/$route",
+            ['headers' => array('Authorization' => "Bearer {$this->token}"),
+            'body' => $data, 'allow_redirects' => false]);
+        if(!is_null($files)) {
+            $body = $request->getBody();
+            foreach($files as $postName => $realName) {
+                $body->addFile(new GuzzleHttp\Post\PostFile($postName, fopen($realName, 'r')));
+            }
+        }
+        if($this->handleExceptions) {
+            try {
+                $response = $this->client->send($request);
+            } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+                if($e->hasResponse()) {
+                    $status = $e->getResponse()->getStatusCode();
+                    if($status ==  401) {
+                        ilUtil::sendFailure("Not authorized to POST to $route", true);
+                    } else {
+                        ilUtil::sendFailure("POSTing to $route failed<br />".$e->getMessage(), true);
+                    }
+                }
+                return false;
+            }
+        } else {
+            $response = $this->client->send($request);
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * Send a GET request to a given route.
+     *
+     * @param string $route REST route
+     * @return string|bool JSON-decoded response or `false` on error, if error handling is enabled
+     * @throws BadResponseException on Guzzle failure if error handling is disabled
+     */
+    public function get($route) {
+        if($this->handleExceptions) {
+            try {
+                $response = $this->client->get("/{$this->clientId}/restplugin.php/$route",
+                    ['headers' => array('Authorization' => "Bearer {$this->token}")]);
+            } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+                if($e->hasResponse()) {
+                    $status = $e->getResponse()->getStatusCode();
+                    if($status ==  401) {
+                        ilUtil::sendFailure("Not authorized to GET $route", true);
+                    } else {
+                        ilUtil::sendFailure("GETting $route failed<br />".$e->getMessage(), true);
+                    }
+                }
+                return false;
+            }
+        } else {
+            $response = $this->client->get("/{$this->clientId}/restplugin.php/$route",
+                ['headers' => array('Authorization' => "Bearer {$this->token}")]);
+        }
+
+        return $response->json();
+    }
+}
+
+

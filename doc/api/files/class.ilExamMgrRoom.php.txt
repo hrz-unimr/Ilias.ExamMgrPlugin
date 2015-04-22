@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * Data class for exam rooms.
+ */
+class ilExamMgrRoom {
+
+    /**
+     * Constructor.
+     * Create a room with an id or (a name and a capacity).
+     *
+     * @param int $id DB id.
+     * @param string $name The room's name/description, used in the UI and mail.
+     * @param int $capacity The room's capacity, used in the UI to show utilization.
+     */
+    public function __construct($id=0, $name='', $capacity=0) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * Create DB entry for this room.
+     */
+    public function doCreate(){
+        global $ilDB;
+
+        $id = $ilDB->nextID("rep_robj_xemg_rooms");    // get next sequence number (DB independent AUTO_INCREMENT)
+        $ilDB->manipulate($ins = "INSERT INTO rep_robj_xemg_rooms".
+                                 " (id, name, capacity) VALUES".
+                                 " ( ".
+                                 $ilDB->quote($id, 'integer') . ", " .
+                                 $ilDB->quote($this->name, 'text') . ", " .
+                                 $ilDB->quote($this->capacity, 'integer') .
+                                 ")");
+    }
+
+    /**
+     * Read room from DB based on id.
+     */
+    public function doRead() {
+        global $ilDB;
+
+        $res = $ilDB->query($q = "SELECT * FROM rep_robj_xemg_rooms ".
+            "WHERE id=".$ilDB->quote($this->id, "integer"));
+        $row = $ilDB->fetchAssoc($res);
+
+        $this->name = $row['name'];
+        $this->capacity = $row['capacity'];
+        return $this;   // fluent interface!
+    }
+
+
+    /**
+     * Update this room in DB.
+     */
+    public function doUpdate() {
+        global $ilDB;
+
+        $ilDB->manipulate($ins = "UPDATE rep_robj_xemg_rooms".
+            " SET name = " . $ilDB->quote($this->name, 'text') . ", ".
+            " capacity = " . $ilDB->quote($this->capacity, 'integer') . 
+            " WHERE id = " . $ilDB->quote($this->id, 'integer'));
+    }
+
+    /**
+     * Delete this room from DB.
+     * TODO implement? What about runs that use this room?
+     */
+    public function doDelete() {
+    }
+
+    /**
+     * Helper method to get all rooms that are known to the plugin.
+     *
+     * @return array Array with $room_id => ilExamMgrRoom objects entries.
+     */
+    public static function getAllRooms() {
+        global $ilDB;
+        $res = $ilDB->query($q = "SELECT * FROM rep_robj_xemg_rooms ");
+
+        $rooms = array();
+        while($row = $ilDB->fetchAssoc($res)) {
+            $rooms[$row['id']] = new ilExamMgrRoom($row['id'], $row['name'], $row['capacity']);
+        }
+        return $rooms;
+    }
+}
+
+

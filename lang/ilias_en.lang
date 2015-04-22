@@ -1,0 +1,219 @@
+
+<!-- language file start -->
+pluginObjectTitle#:#Management of eAssessment
+noCourse#:#Don't link to assessment course
+obj_xemg#:#eAssessment manager
+objs_xemg#:#eAssessments
+eAssessment#:#eAssessment
+title#:#Name of Assessment
+desc#:#Description
+xemg_new#:#Request eAssessment
+objs_xemg_duplicate#:#Clone existing eAssessment
+xemg_add#:#Next
+clientView#:#Course Admin View
+clientEdit#:#Add Basic Info
+adminView#:#IT Admin View
+saveClientEdit#:#Submit Data
+examDate#:#Assessment date/time
+institute#:#Institute
+duration#:#Duration
+durationHint#:#Duration to take the exam, in minutes
+enterClientData#:#Basic Data
+examTime#:#Assessment start time
+examNumStudents#:#Number of expected students
+dataCreated#:#Data has been stored
+assessmentRequested#:#eAssessment %s requested
+assessmentTitleChanged#:#Changed assessment title from %s to %s
+changeByAdmin#:#Change by admin
+dataUpdated#:#Data has been updated
+date#:#Date
+time#:#Time
+cat_create_xemg#:#Create eAssessment management request
+localCourseCreated#:#Plugin object %s moved to new assessment authoring course %s
+localCourseNoAccount#:#Account(s) %s didn't exist, have been created and added as course administrator(s).
+assessmentCourses#:#Courses on Assessment System
+createCourseAuthor#:#Create Course in Authoring System
+createLinkCourseAssessment#:#Create/Link course in Assessment System
+createCourseAssessmentSuffix#:#Suffix for Assessment Course
+linkCourseAssessment#:#Link with existing course on Assessment System
+linkCourseAssessmentHint#:#Link this course with existing course on remote system (via Ref ID)
+createCourseAssessmentHint#:#Course will be created on Assessment System in the same category, with the same name as this course and the given suffix.
+assessmentCourseCreated#:#Course created in assessment system (link: %s)
+assessmentCourseCreatedHTML#:#Course created in assessment system (<a href="%s">link</a>)
+assessmentCourseLinked#:#Link to existing course in assessment system created (link: %s)
+assessmentCourseLinkedHTML#:#Link to existing course in assessment system created (<a href="%s">link<a>)
+createRandomPW#:#Create random password
+courseContainer#:#Container Category for Course
+courseContainerHint#:#Use provided auto completion!
+pluginConfig#:#Configuration of eAssessment Management Plugin
+sectionAssessmentSystem#:#Access to Assessment System
+addrAssessmentSystemREST#:#Address (Host:Port) of Assessment System (REST interface)
+addrAssessmentSystemWeb#:#Address (Host:Port) of Assessment System (web interface)
+addrAssessmentSystemWebExpl#:#Addresses might differ, e. g. if both ILIAS instances are connected via VLAN and the web interface is accessed from somewhere else.
+secureAssessmentSystem#:#Secure Connection
+secureAssessmentSystemDescr#:#Use HTTPS connection to assessment system?
+userAssessmentSystem#:#Login for assessment system
+passAssessmentSystem#:#Password for assessment system
+clientAssessmentSystem#:#ILIAS client ID for assessment system
+settings_saved#:#Settings Saved
+course_adm_overview#:#Overview
+course_adm_log#:#Event Log
+sectionTicketSystem#:#Credentials for Ticket System
+disableTicketSystem#:#Disable Ticket System
+userTicketSystem#:#Login for ticket system
+passTicketSystem#:#Password for ticket system
+noRTUser#:#IT could not be notified about this request.
+RTSuccess#:#IT notified, ticket id is %s.
+ticket_subject#:#E-Assessment %s on %s
+status#:#Current status
+status_requested#:#Examination request sent.
+status_course_local#:#Examination course created (authoring system).
+status_course_remote#:#Examination course created (assessment system).
+status_user_imported#:#User imported.
+status_unknown#:#Unknown status.
+uploadUsers#:#Upload Users
+user_import_col_matr#:#Column for matriculation no.
+user_import_col_first#:#Column for first name
+user_import_col_last#:#Column for last name
+user_import_col_ldap#:#Column for Student ID (account name)
+user_import_list#:#Users for import
+user_import_hint#:#Separators between fields are automatically determined. Must be one of tabulator, comma, or semicolon.
+user_import_success#:#Added %s participating students to the exam.
+user_import_fail#:#There were problems, please see messages in the text field.
+userAddView#:#User Import
+user_list_overview#:#Users registered for this examination
+user_list_overview_none#:#There are currently no users registered for this examination
+last_name#:#Last name
+first_name#:#First name
+user_list_matriculation_header#:#Matriculation No.
+ldap_server#:#LDAP Server Settings
+ldap_host#:#LDAP Server host
+ldap_port#:#LDAP Server port
+ldap_pass#:#LDAP bind password
+ldap_binddn#:#LDAP bind DN
+ldap_basedn_stud#:#LDAP search base DN for student account (by person)
+ldap_basedn_staff#:#LDAP search base DN for staff account (by account)
+department#:#Department
+existing_runs#:#Scheduled Runs
+create_run#:#Create New Run
+run_title#:#Title
+run_time#:#Date and Time
+run_start#:#Begin
+run_end#:#End
+run_type#:#Type
+run_add#:#Create Run
+run_edit#:#Edit
+run_delete#:#Delete
+run_no_runs#:#No Runs yet
+run_added#:#Run created
+run_changed#:#Run changed
+run_deleted#:#Run deleted
+pathAssessmentSystem#:#Path to ILIAS instance
+apiKeyAssessmentSystem#:#Oauth2 Api Key
+apiSecretAssessmentSystem#:#Oauth2 Api Secret
+pathTicketSystem#:#URL of Ticket System
+infoPathTicketSystem#:#Complete URL of RT instance (e.g. https://domain.example/rt)
+queueTicketSystem#:#Queue in Ticket Sytem
+organizators#:#Examiners/Autors
+addOrganizators#:#Add Examiner/Author
+organizatorAccountsHint#:#Will be notified via ticket system, will be added as administrators in authoring course. Please use auto completed staff email addresses only!
+organizatorAccounts#:#Examnier/Author Accounts
+userManageView#:#User Management
+numAllStudents#:#Total # Students:
+targetRun#:#Target run
+noRunYet#:#don't assign yet
+updateAssignments#:#Update Assignments
+mailingView#:#Invitation Email
+mailRecipients#:#Recipient(s)
+allStudents#:#All enrolled students
+oneRun#:#One run only
+selectRun#:#Select Run
+specificUsers#:#Select specific users
+mailTemplate#:#Template
+mailTemplateHint#:#Possible placeholders are (in curly braces): %s
+sendMail#:#Send Mails
+invitationSubject#:#Invitation to e-assessment
+invitationAll#:#Invitations for all runs have been sent.
+invitationRun#:#Invitations for run '%s' have been sent.
+mailNoSMTP#:#Could not connect to SMTP host %s:%s
+mailSentSuccess#:#Successfully sent %s invitations via %s:%s
+mailSentFailure#:#Sending mails failed for %s invitations<br />Last error was '%s' while processing '%s'
+transferExam#:#Transfer Exam
+transferExamSuccess#:#Exam successfully transferred to assessment system
+transferExamFailure#:#Error while transferring exam
+transferExamExpl#:#Copy an existing exam to an existing course on the remote system, or create a link to an existing exam on the remote system.
+transferExamCopy#:#Copy Test from here to Assessment Aystem
+transferExamLink#:#Link Existing Test on Assessment System
+transferExamSource#:#Test Source
+transferExamRemoteID#:#Remote Ref ID
+testSelection#:#Test
+courseSelection#:#Course
+userTransferView#:#User Transfer
+smtp_server#:#SMTP server for invitation emails
+smtp_host#:#SMTP host
+smtp_port#:#SMTP port
+smtp_from#:#Sender
+save#:#Save
+transferUsers#:#Users
+noRemote#:#Action not possible, run %s not linked to remote course
+transferUsersOneWayFail#:#Creating and Enrolling user failed<br />%s
+transferUsersLDAPFail#:#Enrolling LDAP user failed<br />%s
+transferUsersSuccess#:#Successfully (created and) enrolled %s users
+transferUsersProblems#:#The following problems occurred:<br />%s
+createOneWayUsers#:#Create one-way accounts
+enrollLDAPUsers#:#Enroll existing LDAP users
+course_unlink#:#Unlink Course
+linked_courses#:#Linked Courses
+no_linked_courses#:#No Courses yet on Assessment System
+course_title#:#Course Title (Assessment System)
+room_no_rooms#:#No Rooms entered
+room_edit#:#Edit room
+room_capacity#:#Capacity
+room_name#:#Name
+existing_rooms#:#Known Rooms
+create_room#:#Create new Room
+room_add#:#Add Room
+room_added#:#Room added to database
+room_updated#:#Room updated
+run_room#:#Assessment room
+room#:#Room
+createMessage#:#Message to IT
+password#:#Password
+tests#:#Tests
+test_title#:#Test title
+test_remote_loc#:#Location in assessment system
+test_fetch#:#Fetch results
+test_cleanup#:#Convert Accounts to LDAP
+test_unlink#:#Unlink Test
+test_unlink_msg#:#Test has been removed from list. Further action is possible only on the <a href="%s">Assessment System</a>.
+test_linked_no_title#:#Manually linked, unknown title
+linkExamSuccess#:#Existing test successfully linked
+autoGenAuthorCourse#:#Automatically created course (test creation)
+printUserNo#:#No.
+printUserFilenameAll#:#User list %s complete
+printUserFilenameOne#:#User list %s
+printUserLDAP#:#LDAP
+printUserOneTime#:#One-time
+printingListTitle#:#User List
+printingAll#:#all Runs
+printingOne#:#one Run
+printingFor#:#Print Fist for
+printingSubmit#:#Print List
+alreadyOneWay#:#One-way account for %s already created for %s
+alreadyLdap#:#LDAP account for %s already created for %s
+noRemoteAccount#:#No remote account exists for %s.
+noMailSent#:#No invitation email has been sent.
+addToRun#:#Add
+deleteFromRun#:#Delete
+inviteToRun#:#Invite
+transferForRun#:#Transfer
+fromTitle#:#from
+toTitle#:#to
+calendar#:#CalDAV-Calendar
+calendarUser#:#Username
+calendarPass#:#Password
+calendarURL#:#URL
+calendarURLHint#:#CalDAV subscription URL of remote calendar
+runParallel#:#Parallel run
+runSuccessive#:#Successive run
+runInspection#:#Exam inspection

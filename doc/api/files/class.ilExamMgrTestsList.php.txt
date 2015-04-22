@@ -1,0 +1,68 @@
+<?php
+
+require_once "class.ilExamMgrForm.php";
+
+/**
+ * Form element to display a table of all tests of an exam.
+ */
+class ilExamMgrTestsList extends ilExamMgrFormElement {
+
+    /**
+     * Constructor.
+     *
+     * @param ilObjExamMgrGUI $parent The parent GUI.
+     * @param array $testIdToTitle Array with [test Ref id] => [test title] mapping.
+     * @param array $remoteCourses Array with [local DB id of remote course] => [ilExamMgrRemoteCrs object] mappings.
+     */
+    public function __construct(ilObjExamMgrGUI $parent, $testIdToTitle, $remoteCourses) {
+        parent::__construct($parent);
+        $this->testIdToTitle = $testIdToTitle;
+        $this->remoteCourses = $remoteCourses;
+    }
+
+    public function getTitle(){
+        global $lng;
+        return $lng->txt("rep_robj_xemg_tests");
+    }
+
+    /**
+     * Render the element.
+     *
+     * Creates the neccessary HTML to display the table with tests
+     * and buttons to interact with each test.
+     *
+     * @return string HTML fragment.
+     */
+    public function render() {
+        global $tpl, $lng, $ilDB;
+        $testListTpl = new ilTemplate("tpl.testsList.html", true, true, $this->parent->plugin_dir);
+
+        $testListTpl->setVariable("TITLE_HDR", $lng->txt("rep_robj_xemg_test_title"));
+        $testListTpl->setVariable("REMOTE_LOCATION_HDR", $lng->txt("rep_robj_xemg_test_remote_loc"));
+
+        $res = $ilDB->query("SELECT * FROM rep_robj_xemg_tests WHERE exam_obj_id = ".$ilDB->quote($this->parent->object->getId(), "integer"));
+        while($row = $ilDB->fetchAssoc($res)) {
+            $title = "unknown";
+            foreach($this->remoteCourses as $rct) {
+                if($rct->remote_id == $row['remote_crs_ref_id']) {
+                    $title = $rct->remote_title;
+                    break;
+                }
+            }
+
+            $testListTpl->setCurrentBlock("tests_table_row");
+            $testListTpl->setVariable("TITLE", $this->testIdToTitle[$row['local_ref_id']]);
+            $testListTpl->setVariable("REMOTE_LOCATION", '<a href="'.ilExamMgrPlugin::createPermaLink($row['remote_ref_id'], 'tst') ."\">$title</a>");
+            $testListTpl->setVariable("FETCH_CMD", "fetch_test_{$row['id']}");
+            $testListTpl->setVariable("FETCH_TXT", $lng->txt("rep_robj_xemg_test_fetch"));
+            $testListTpl->setVariable("CLEANUP_CMD", "cleanup_test_{$row['id']}");
+            $testListTpl->setVariable("CLEANUP_TXT", $lng->txt("rep_robj_xemg_test_cleanup"));
+            $testListTpl->setVariable("UNLINK_CMD", "unlink_test_{$row['id']}");
+            $testListTpl->setVariable("UNLINK_TXT", $lng->txt("rep_robj_xemg_test_unlink"));
+            $testListTpl->parseCurrentBlock();
+        }
+        return $testListTpl->get();
+    }
+}
+
+

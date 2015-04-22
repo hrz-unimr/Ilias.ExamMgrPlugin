@@ -1,0 +1,61 @@
+<table class="exam_mgr_user_management">
+    <!-- First row: empy cell for student no., header for "all students" column,
+         for each run: header (run title) -->
+    <tr><th></th>
+        <th colspan="{COLSPAN_FIRST}" class="xemg_center">{ALL_STUDENTS}</th>
+        <!-- BEGIN run_header -->
+        <th colspan="{COLSPAN_RUN}" class="xemg_center">{RUN_TITLE}</th>
+        <!-- END run_header -->
+    </tr>
+    <!-- Second row: empty cell for student no, total number of students,
+         optional "add to run" selectors header,
+         for each run: basic data, optional "do sth. with this student/run combination" header -->
+    <tr><td></td>
+        <td>{NUM_STUD}</td>
+        <!-- BEGIN add_action_header -->
+        <td class="xemg_center">{ADD_TO_RUN}</td>
+        <!-- END add_action_header -->
+
+        <!-- BEGIN expl_header -->
+        <td>{TIME}<br />{ROOM}<br />{NUM_RUN}/{ROOM_CAPACITY}</td>
+        <!-- BEGIN run_action_header -->
+        <td class="xemg_center">{ACTION}</td>
+        <!-- END run_action_header -->
+        <!-- END expl_header -->
+    </tr>
+
+
+    <!-- Third and following rows: student data.
+         Number, Name, optional "add to run" selectors,
+         for each run: boolean "participates" cell, optional "do sth. with this student/run combination selector. -->
+
+    <!-- BEGIN table_row -->
+    <tr><td>{STUDENT_NO}</td><td>{STUDENT_NAME}</td>
+        <!-- BEGIN add_to_run_selector -->
+        <td class="select_cell">
+            <input type="checkbox" class="{NAME}" name="{NAME}[]" value="{STUDENT_ID}" />
+            <span style="whitespace:nowrap;">
+                <input title="{FROM_TITLE}" type="radio" class="{NAME}_from" name="{NAME}_from" value="{STUDENT_ID}"/>
+                <input title="{TO_TITLE}" type="radio" class="{NAME}_to" name="{NAME}_to" value="{STUDENT_ID}">
+            </span>
+        </td>
+        <!-- END add_to_run_selector -->
+
+        <!-- BEGIN student_assignment -->
+        <td class="xemg_center particip_cell">{PARTICIPATES}</td>
+        <!-- BEGIN action_selector -->
+        <td class="select_cell">
+            <input type="checkbox" class="{NAME}" name="{NAME}[]" value="{STUDENT_ID}" />
+            <span style="whitespace:nowrap;">
+                <input title="{FROM_TITLE}" type="radio" class="{NAME}_from" name="{NAME}_from" value="{STUDENT_ID}"/>
+                <input title="{TO_TITLE}" type="radio" class="{NAME}_to" name="{NAME}_to" value="{STUDENT_ID}">
+            </span>
+        </td>
+        <!-- END action_selector -->
+        <!-- BEGIN empty_action_selector -->
+        <td></td>
+        <!-- END empty_action_selector -->
+        <!-- END student_assignment -->
+    </tr>
+    <!-- END table_row -->
+</table>

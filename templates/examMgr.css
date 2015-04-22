@@ -1,0 +1,53 @@
+#exam_mgr_log td {
+    padding: 0 1em;
+}
+
+#exam_mgr_user_list td {
+    padding: 0 1em;
+}
+
+.exam_mgr_user_management {
+    padding: 0 1em;
+}
+
+.exam_mgr_user_management th {
+    padding: 0 1em;
+    font-weight: bold;
+}
+
+td {
+    border: 1px solid #ddd;
+}
+
+th {
+/*    border: 1px solid black; */
+    text-align: center;
+}
+
+.flushright {
+    float: right;
+}
+
+.selectedRow {
+    background-color: #bbf;
+}
+.select_cell {
+    padding: 0;
+}
+
+.xemg_remove {
+    background-color: #fbb;
+}
+
+.xemg_center {
+    text-align: center;
+}
+
+.exam_mgr_table td {
+    padding: 0 1em;
+}
+.exam_mgr_table th {
+    padding: 0 1em;
+    text-align: center;
+    font-weight: bold;
+}

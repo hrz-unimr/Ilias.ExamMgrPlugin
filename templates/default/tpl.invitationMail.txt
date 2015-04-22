@@ -1,0 +1,27 @@
+{SALUTATION},
+
+Sie wurden in unserem System für folgende E-Klausur eingetragen:
+(Bei Fragen oder Problemen bezüglich An- oder Abmeldung wenden Sie 
+sich bitte zunächst an Ihre/n Prüfer/in bzw. das Prüfungsbüro.)
+
+{TITLE}
+Datum/Uhrzeit: {DATETIME}
+Raum: {ROOM}
+
+Um an der E-Klausur teilnehmen zu können, müssen Sie sich mit einem speziellen
+Login-Namen anmelden. Ihr persönlicher Login-Name lautet:
+
+>>> {LOGIN}
+
+Bitte merken oder notieren Sie sich diesen Namen. Das Passwort ist für alle
+Klausurteilnehmer/innen gleich und wird zu Beginn der Bearbeitungszeit bekannt 
+gegeben. Sie benötigen außerdem einen Lichtbildausweis zur Identifizierung.
+
+Mit freundlichen Grüßen,
+E-Klausur-Service Uni Marburg
+{SENDER}
+
+--
+Hinweise zu E-Klausuren und häufig gestellte Fragen: http://uni-marburg.de/QDFa3
+
+
