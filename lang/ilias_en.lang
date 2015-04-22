@@ -89,6 +89,10 @@ user_list_matriculation_header#:#Matriculation No.
 ldap_server#:#LDAP Server Settings
 ldap_host#:#LDAP Server host
 ldap_port#:#LDAP Server port
+ldap_encryption#:#LDAP Encryption
+ldap_ldaps#:#Use ldaps:// Protocol
+ldap_startTLS#:#Use STARTLS Method
+ldap_noEncryption#:#Don't encrypt LDAP connection
 ldap_pass#:#LDAP bind password
 ldap_binddn#:#LDAP bind DN
 ldap_basedn_stud#:#LDAP search base DN for student account (by person)

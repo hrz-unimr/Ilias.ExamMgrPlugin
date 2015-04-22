@@ -202,6 +202,18 @@ class ilExamMgrConfigGUI extends ilPluginConfigGUI
         $ti->setMaxLength(100);
         $form->addItem($ti);
 
+        $ldaps = new ilRadioOption($pl->txt("ldap_ldaps"), "ldaps");
+        $startTLS = new ilRadioOption($pl->txt("ldap_startTLS"), "starttls");
+        $noEncryption = new ilRadioOption($pl->txt("ldap_noEncryption"), "none");
+
+        $group = new ilRadioGroupInputGUI($pl->txt("ldap_encryption"), "ldap_encryption");
+        $group->addOption($startTLS);
+        $group->addOption($ldaps);
+        $group->addOption($noEncryption);
+        $group->setRequired(true);
+
+        $form->addItem($group);
+
         $pi = new ilPasswordInputGUI($pl->txt("ldap_pass"), "ldap_pass");
         $pi->setSkipSyntaxCheck(true);
         $pi->setRetype(false);

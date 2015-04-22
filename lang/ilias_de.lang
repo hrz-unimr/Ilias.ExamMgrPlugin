@@ -86,9 +86,13 @@ user_list_overview_none#:#Noch keine Teilnehmer angemeldet
 last_name#:#Nachname
 first_name#:#Vorname
 user_list_matriculation_header#:#Matrikelnummer
-ldap_server#:#LDAP Servereinstellungen
-ldap_host#:#LDAP Server Host
-ldap_port#:#LDAP Server Port
+ldap_server#:#LDAP-Servereinstellungen
+ldap_host#:#LDAP-Server Host
+ldap_port#:#LDAP-Server Port
+ldap_encryption#:#LDAP-Verschlüsselung
+ldap_ldaps#:#ldaps://-Protokoll
+ldap_startTLS#:#STARTLS-Methode
+ldap_noEncryption#:#LDAP-Verbindung nicht verschlüsseln
 ldap_pass#:#LDAP Bind-Passwort
 ldap_binddn#:#LDAP Bind DN
 ldap_basedn_stud#:#LDAP Base DN für Suche nach Studenten-Accounts (Person)

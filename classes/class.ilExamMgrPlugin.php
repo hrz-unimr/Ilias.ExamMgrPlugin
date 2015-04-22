@@ -46,6 +46,7 @@ class ilExamMgrPlugin extends ilRepositoryObjectPlugin
         'rt_pass' => 'pass',
         'ldap_host' => 'text',
         'ldap_port' => 'integer',
+        'ldap_encryption' => 'text',
         'ldap_pass' => 'text',
         'ldap_binddn' => 'text',
         'ldap_basedn_stud' => 'text',

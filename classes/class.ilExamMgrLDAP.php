@@ -116,14 +116,28 @@ class ilExamMgrLDAP {
         $options = array(
             'host' => $settings['ldap_host'],
             'port' => $settings['ldap_port'],
-//            'useSsl' => true, // ldap-pbackup
-            'useStartTls' => true,  // test system
             'password' => $settings['ldap_pass'],
             'bindRequiresDn' => true,
             'username' => $settings['ldap_binddn'],
         );
+        switch($settings['ldap_encryption']) {
+        case "ldaps":
+            $options['useSsl'] = true;
+            break;
+        case "starttls":
+            $options['useStartTls'] = true;
+            break;
+        case "none":
+            break;
+        }
         $this->ldap = new Zend\Ldap\Ldap($options);
-        $this->ldap->bind();
+
+        try {
+            $this->ldap->bind();
+        } catch (Zend\Ldap\Exception\LdapException $e) {
+            error_log($e->getMessage());
+            throw $e;
+        }
     }
 
     /**
@@ -196,6 +210,7 @@ class ilExamMgrLDAP {
      * or up to ten results.
      */
     public function searchStaffMail($mail, $exact=true) {
+        error_log("searching");
         $searchterm = $exact ? "(mail=$mail)" : "(mail=$mail*)";
         return $this->ldap->search(
                    $searchterm,
