@@ -157,8 +157,8 @@ class ilExamMgrFormExamTransfer extends ilExamMgrForm {
                                  " ( ".
                                  $ilDB->quote($id, 'integer') . ", " .
                                  $ilDB->quote($testRefId, 'integer') . ", " .
-                                 $ilDB->quote($response['data']['test_ref_id'], 'integer') . ", " .
-                                 $ilDB->quote($response['data']['crs_ref_id'], 'integer') . ", " .
+                                 $ilDB->quote($response['test_ref_id'], 'integer') . ", " .
+                                 $ilDB->quote($response['crs_ref_id'], 'integer') . ", " .
                                  $ilDB->quote($this->plugin_obj->getId(), 'integer') .")"); 
         $message = $lng->txt("rep_robj_xemg_transferExamSuccess");
         ilUtil::sendSuccess($message, true);
@@ -229,7 +229,7 @@ class ilExamMgrFormExamTransfer extends ilExamMgrForm {
 
         // Create user accouts before import to allow proper linking
         // TODO: Fetch LDAP attributes?
-        $logins = $response['data']['participants'];
+        $logins = $response['participants'];
 
         global $rbacreview, $rbacadmin;
         $user_role_array = $rbacreview->getRolesByFilter($rbacreview::FILTER_ALL, 0, 'User');
@@ -269,9 +269,9 @@ class ilExamMgrFormExamTransfer extends ilExamMgrForm {
         require_once "./Modules/Test/classes/class.ilObjTest.php";
 
         $basedir = ilObjTest::_createImportDirectory();
-        $filename = $response['data']['filename'];  // Have to use ILIAS' own naming schema.
+        $filename = $response['filename'];  // Have to use ILIAS' own naming schema.
         $target = $basedir . "/" . $filename;
-        file_put_contents($target, base64_decode($response['data']['testFile']));
+        file_put_contents($target, base64_decode($response['testFile']));
 
         ilUtil::unzip($target);
 

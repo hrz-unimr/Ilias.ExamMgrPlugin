@@ -65,7 +65,7 @@ class ilExamMgrRemoteCrs {
         while($row = $ilDB->fetchAssoc($res)) {
             if($readTitle) {
                 $data = $rest->get("v1/courses/{$row['remote_crs_ref_id']}");
-                $title = $data['data']['courseinfo'][0]['title'];
+                $title = $data['courseinfo']['title'];
             } else {
                 $title = "n/a";
             }
@@ -117,7 +117,7 @@ class ilExamMgrRemoteCrs {
             while($row = $ilDB->fetchAssoc($res)) {
                 try {
                     $data = $rest->get("v1/courses/{$row['remote_crs_ref_id']}");
-                    $title = $data['data']['courseinfo'][0]['title'];
+                    $title = $data['courseinfo']['title'];
                     $courses[$row['id']] = new ilExamMgrRemoteCrs($row['id'], $row['remote_crs_ref_id'], $row['exam_obj_id'], $row['password'], $title);
                 } catch (\GuzzleHttp\Exception\BadResponseException $e) {
                     if($e->hasResponse()) {

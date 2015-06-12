@@ -103,7 +103,7 @@ class ilExamMgrFormCreateCourseRemote extends ilExamMgrForm {
                 return false;
             }
 
-            $remote_ref_id = $resp['data']['finalRefId'];
+            $remote_ref_id = $resp['finalRefId'];
 
             $course_name = $courseTitle . ": " . $title;
 
@@ -112,7 +112,7 @@ class ilExamMgrFormCreateCourseRemote extends ilExamMgrForm {
             if(!$jsonresp) {
                 return false;
             }
-            $crs = new ilExamMgrRemoteCrs(0, $jsonresp['data']['newRefId'], $this->plugin_obj->getId(), $this->getInput('course_pw'));
+            $crs = new ilExamMgrRemoteCrs(0, $jsonresp['refId'], $this->plugin_obj->getId(), $this->getInput('course_pw'));
             $crs->writeDB();
             $this->plugin_obj->setStatus(ilObjExamMgr::STATUS_REMOTE);
             $this->plugin_obj->update();

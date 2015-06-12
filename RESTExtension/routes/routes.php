@@ -1,12 +1,14 @@
 <?php 
 
+use \RESTController\core\auth as Auth;
+use \RESTController\libs as Libs;
+
 $app->group('/examPlugin', function () use ($app) {
 
-    $app->get('/refIdByPath/:path+', function ($path) use ($app) {
+    $app->get('/refIdByPath/:path+', '\RESTController\libs\OAuth2Middleware::TokenAdminAuth', function ($path) use ($app) {
         global $tree;
-        $response = new ilRestResponse($app);
+        $data = ['looking for' => $path];
 
-        $response->setData("looking for", $path);
         $refId = $tree->getRootId();
         $catTitle = "root";
         foreach($path as $segment) {
@@ -19,18 +21,16 @@ $app->group('/examPlugin', function () use ($app) {
                 $refId = $child['ref_id'];
                 $catTitle = $child['title'];
             } else {
-                $response->setMessage("Could not find '$segment' in category '$catTitle'");
-                $response->setHttpStatus("404");
-                $response->send();
+                $app->halt(404, "Could not find '$segment' in category '$catTitle'");
                 return;
             }
         }
-        $response->setData("finalRefId", $refId);
-        $response->send();
+        $data["finalRefId"] = $refId;
+        $app->success($data);
     });
 
     // authenticate will nicht
-    $app->post('/putTest/:targetRefId', 'authenticateILIASAdminRole', function ($targetRefId) use ($app) {
+    $app->post('/putTest/:targetRefId', '\RESTController\libs\OAuth2Middleware::TokenAdminAuth', function ($targetRefId) use ($app) {
         // TODO: this piece of code is required for both assessment system (put test here)
         // and authoring system (re-import completed exam).
         // Wat do?
@@ -39,32 +39,24 @@ $app->group('/examPlugin', function () use ($app) {
         require_once "./Modules/Test/classes/class.ilTestResultsImportParser.php";
         require_once "./Modules/Test/classes/class.ilObjTest.php";
 
-        $env = $app->environment();
-        $user_id = ilRestLib::loginToUserId($env['user']);
-
-        $response = new ilRestResponse($app);
+        $auth = new Auth\Util();
+        $accessToken = $auth->getAccessToken();
+        $user_id = $accessToken->getUserId();
 
         // C/P and modified from class.ilObjTestGUI.php:uploadTstObject()
         $errorCode = $_FILES["testUpload"]["error"];
         if ($errorCode > UPLOAD_ERR_OK) {
-            $response->setMessage("Error during file upload");
-            $response->setData("Code", $errorCode);
-            $response->setData("Explanation", "http://php.net/manual/en/features.file-upload.errors.php");
-            $response->setHttpStatus("400");
-            $response->setRestCode("400");
-            $response->send();
-            exit;
+            $app->halt(400, ["msg" => "Error during file upload",
+                             "php_error_code" => $errorCode,
+                             "explanation" => "http://php.net/manual/en/features.file-upload.errors.php"],
+                       400);  // json-status code, probably not used by client
         }
-
-        error_log(1);
 
         $basedir = ilObjTest::_createImportDirectory();
 
         $file = pathinfo($_FILES["testUpload"]["name"]);
         $full_path = $basedir . "/" . $_FILES["testUpload"]["name"];
-        error_log(2);
         ilUtil::moveUploadedFile($_FILES["testUpload"]["tmp_name"], $_FILES["testUpload"]["name"], $full_path);
-        error_log(3);
 
         ilUtil::unzip($full_path);
 
@@ -76,11 +68,7 @@ $app->group('/examPlugin', function () use ($app) {
 
         if (!is_file($qti_file)) {
             ilUtil::delDir($basedir);
-            $response->setMessage("No valid ILIAS test export");
-            $response->setHttpStatus("400");
-            $response->setRestCode("400");
-            $response->send();
-            exit;
+            $app->halt(400, ["msg" => "No valid ILIAS test export"], 400);
         }
 
         /* In the original code, the QTIParser is invoked twice:
@@ -98,15 +86,15 @@ $app->group('/examPlugin', function () use ($app) {
         $newObj->putInTree($targetRefId);
         // TODO: duplicated from courseRoutes
         // required for setPermission and notify
-        ilRestLib::initSettings(); 
-        ilRestLib::initDefaultRestGlobals();
-        ilRestLib::initGlobal("ilUser", "ilObjUser", "./Services/User/classes/class.ilObjUser.php");
+
+        Libs\RESTLib::loadIlUser();
         global $ilUser;
         $ilUser->setId($user_id);
         $ilUser->read();
+        Libs\RESTLib::initAccessHandling();
+
         global $ilias;
         $ilias->account = & $ilUser;
-        ilRestLib::initAccessHandling();
         $newObj->setPermissions($targetRefId);
         /* This line was (in uploadTstObject):
         $newObj->notify("new",$_GET["ref_id"],$_GET["parent_non_rbac_id"],$_GET["ref_id"],$newObj->getRefId());
@@ -132,6 +120,7 @@ $app->group('/examPlugin', function () use ($app) {
         $qtiParser->startParsing();
         $newObj->saveToDb();
         // (probably obsolete) check for valid upload.
+        // still using old (<0.8) API
 /*        $founditems = & $qtiParser->getFoundItems();
         $newObj->saveToDb();
 
@@ -178,11 +167,9 @@ $app->group('/examPlugin', function () use ($app) {
 
         $newObj->updateMetaData();
 
-        $response->setData("test_ref_id", $newObj->getRefId());
-        $response->setData("crs_ref_id", $targetRefId);     // is used as parameter by client, no need to round trip?
-
-        $response->setMessage("Imported Test {$newObj->getTitle()} in Course with Ref ID $targetRefId");
-        $response->send();
+        $app->success(["test_ref_id" => $newObj->getRefId(),
+                       "crs_ref_id" => $targetRefId,
+                       "msg" => "Imported Test {$newObj->getTitle()} in Course with Ref ID $targetRefId"]);
     });
 
     //////////////////////////////////////////////////////////////////////////
@@ -190,15 +177,12 @@ $app->group('/examPlugin', function () use ($app) {
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
 
-    $app->get('/clean_accounts/:test_ref_id',  'authenticateILIASAdminRole', function($test_ref_id) use($app) {
+    $app->get('/clean_accounts/:test_ref_id',  '\RESTController\libs\OAuth2Middleware::TokenAdminAuth', function($test_ref_id) use($app) {
         require_once "./Modules/Test/classes/class.ilObjTest.php";
         require_once './Services/User/exceptions/class.ilUserException.php';
-        $env = $app->environment();
-        $request = new ilRestRequest($app);
-        $response = new ilRestResponse($app);
         // This line can be removed if https://github.com/ILIAS-eLearning/ILIAS/pull/2 is used.
         // Without this change, the test object needs an initialized $ilUser
-        ilAuthLib::setUserContext($app->environment['user']);  // filled by auth middleware
+        Libs\RESTLib::loadIlUser();
         $test = new ilObjTest($test_ref_id);
         $test->read();
         $participants = $test->getParticipants();
@@ -239,20 +223,18 @@ $app->group('/examPlugin', function () use ($app) {
         }
 
         if($changed > 0) {
-            $response->setMessage("Changed $changed accounts from local to LDAP");
+            $msg = "Changed $changed accounts from local to LDAP";
         } else {
-            $response->setMessage("Nothing changed");
+            $msg = "Nothing changed";
         }
         if(count($problems) > 0) {
-            $response->setData("problems", $problems);
+            $app->success(["msg" => $msg, "problems" => $problems]);
+        } else {
+            $app->success(["msg" => $msg]);
         }
-        $response->toJSON();
     });
 
-    $app->get('/getTest/:ref_id', 'authenticateILIASAdminRole', function ($ref_id) use ($app) {
-        $env = $app->environment();
-        $request = new ilRestRequest($app);
-        $response = new ilRestResponse($app);
+    $app->get('/getTest/:ref_id', '\RESTController\libs\OAuth2Middleware::TokenAdminAuth', function ($ref_id) use ($app) {
         require_once "./Modules/Test/classes/class.ilObjTest.php";
 
         // Get participants, because they have to be created on authoring system
@@ -260,7 +242,7 @@ $app->group('/examPlugin', function () use ($app) {
 
         // This line can be removed if https://github.com/ILIAS-eLearning/ILIAS/pull/2 is used.
         // Without this change, the test object needs an initialized $ilUser
-        ilAuthLib::setUserContext($app->environment['user']);  // filled by auth middleware
+        Libs\RESTLib::loadIlUser();
         $test = new ilObjTest($ref_id);
         $test->read();
         $participants = $test->getParticipants();
@@ -271,15 +253,10 @@ $app->group('/examPlugin', function () use ($app) {
         }
 
         $xml = $test->getXMLZip();   // "create ZIP and return path"
-        $response->setMessage($xml);
-        $response->setData('testFile', base64_encode(file_get_contents($xml)));
-        $response->setData('filename', basename($xml));
-        $response->setData('fullname', $xml);
-        $response->setData('participants', $part_logins);
-        $response->toJSON();
-
+        $app->success(['testFile' => base64_encode(file_get_contents($xml)),
+                       'filename' => basename($xml),
+                       'fullname' => $xml,
+                       'participants' => $part_logins]);
     });
-
-
 });
 ?>

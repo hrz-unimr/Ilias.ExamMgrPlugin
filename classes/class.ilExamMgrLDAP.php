@@ -210,7 +210,6 @@ class ilExamMgrLDAP {
      * or up to ten results.
      */
     public function searchStaffMail($mail, $exact=true) {
-        error_log("searching");
         $searchterm = $exact ? "(mail=$mail)" : "(mail=$mail*)";
         return $this->ldap->search(
                    $searchterm,

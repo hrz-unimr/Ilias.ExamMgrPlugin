@@ -63,10 +63,10 @@ class ilExamMgrFormUserTransfer extends ilExamMgrForm {
         $userData['passwd'] = $remote_crs->password;
         $userData['auth_mode'] = "local";
         $json = $this->rest->post("v1/users", $userData);
-        $userId = $json['data']['id'];
+        $userId = $json['id'];
         $data = array("mode" => "by_id", "usr_id" => $userId, "crs_ref_id" => $remote_crs->remote_id);
         $response = $this->rest->post("v1/courses/enroll", $data);
-        if($response['code'] == 200) {
+        if($response['status'] == 'success') {
             return true;
         } else {
             return $response['msg'];
@@ -82,10 +82,10 @@ class ilExamMgrFormUserTransfer extends ilExamMgrForm {
     private function enrollLDAP(ilExamMgrStudent $student, ilExamMgrRemoteCrs $remote_crs) {
         $ldapId = $student->getLDAP();
 
-        $userData = $this->createUserData($student);    // Required if account not present on accessment system.
+        $userData = $this->createUserData($student);    // Required if account not present on assessment system.
         $data = array("mode" => "by_login", "login" => $ldapId, "crs_ref_id" => $remote_crs->remote_id, "data" => $userData);
         $response = $this->rest->post("v1/courses/enroll", $data);
-        if($response['code'] == 200) {
+        if($response['status'] == 'success') {
             return true;
         } else {
             return $response['msg'];
@@ -173,9 +173,9 @@ class ilExamMgrFormUserTransfer extends ilExamMgrForm {
                     $problems[] = sprintf($lng->txt("rep_robj_xemg_alreadyOneWay"), $s, $run);
                     continue;
                 }
-                $s->setTransferredOneway($run->id);
                 try {
                     $ret = $this->addUserAndEnroll($s, $course);
+                    $s->setTransferredOneway($run->id);
                 } catch (\GuzzleHttp\Exception\BadResponseException $e) {
                     ilUtil::sendFailure(sprintf($lng->txt("rep_robj_xemg_transferUsersOneWayFail"), $e->getResponse()->json()['msg']), true);
                     return false;
@@ -203,7 +203,7 @@ class ilExamMgrFormUserTransfer extends ilExamMgrForm {
             ilUtil::sendSuccess(sprintf($lng->txt("rep_robj_xemg_transferUsersSuccess"), $numSuccess), true);
         }
         if(count($problems)>0) {
-            $problem_string = implode("<br /", $problems);
+            $problem_string = implode("<br />", $problems);
             ilUtil::sendFailure(sprintf($lng->txt("rep_robj_xemg_transferUsersProblems"), $problem_string), true);
         }
         return true;
