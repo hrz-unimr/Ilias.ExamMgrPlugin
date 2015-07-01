@@ -10,10 +10,7 @@ Requirements: php5-curl, [ILIAS REST-Plugin v0.8](https://github.com/hrz-unimr/I
 * Configure ILIAS
   * Test and Assessment: Unique user criteria = login (to transfer tests between ILIAS instances)
   * LDAP-auth
-* `cd` to ILIAS webroot
-* `mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject/ExamMgr/`
-* `cd Customizing/global/plugins/Services/Repository/RepositoryObject/ExamMgr/`
-* Put exam manager code there (git clone, unzip, ...), plugin.php has to  be in Customizing/global/plugins/Services/Repository/RepositoryObject/ExamMgr/
+* Copy the `Customizing` folder from this repo in the ILIAS web root and `cd` into `Customizing/global/plugins/Services/Repository/RepoRepositoryObject/ExamMgr`
 * Get composer (https://getcomposer.org/download/, or just `curl -sS https://getcomposer.org/installer | php`)
 * `php composer.phar install`
 * In ILIAS, go to Administration->Plugins, Actions->Update, Actions->Activate, Actions->Configure (create a dummy room)
